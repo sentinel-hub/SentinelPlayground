@@ -1,0 +1,202 @@
+@import 'variables';
+@import 'geosuggest';
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#nprogress .bar {
+  background: $primaryCol;
+  .peg {
+    box-shadow: 0 0 10px $primaryCol, 0 0 5px $primaryCol;
+  }
+  .spinner-icon {
+    border-top-color: $primaryCol;
+    border-left-color: $primaryCol;
+  }
+}
+#loading {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: #000;
+  text-align: center;
+  color: #fff;
+
+  i {
+    margin: calc(100vh/2 - 50px) auto 10px;
+    font-size: 45px;
+    display: block;
+  }
+}
+
+.btn {
+  border-radius: 6px;
+  border: none;
+  background: $primaryCol;
+  color: #fff;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  font-size: 15px;
+  display: inline-block;
+  vertical-align: middle;
+  text-decoration: none;
+  cursor: pointer;
+
+  i {
+    margin-right: 5px;
+  }
+
+  &:hover {
+    background: $primaryCol;
+    color: #fff;
+    transition: all ease 0.4s;
+  }
+  &.secondary {
+    background: $mainMedium;
+  }
+  &[disabled], &[disabled]:hover {
+    color: #666;
+    background: #eee;
+    cursor: default;
+  }
+}
+
+.toast-success {
+  background: $primaryCol
+}
+.notification {
+  margin: 10px auto;
+  max-width: 400px;
+  padding: 10px;
+  position: relative;
+  text-align: center;
+  color: orange;
+  font-size: 14px;
+}
+
+.imageWithLoader {
+  display: block;
+  text-align: center;
+  i {
+    margin: calc(100vh/2 - 50px) auto 10px;
+    font-size: 45px;
+    display: block;
+  }
+}
+
+.leaflet-popup-pane {
+  z-index: 300;
+}
+.leaflet-grab.isEditing {
+  cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYxIDY0LjE0MDk0OSwgMjAxMC8xMi8wNy0xMDo1NzowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpENzlDNDFEQkNFNjdERjExOTQyNEVGQjJERkVDQTQxRCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo5RDY0NEVCMzNEMkYxMUUyOENEOEYzMjdDNjQzQjNCMiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo5RDY0NEVCMjNEMkYxMUUyOENEOEYzMjdDNjQzQjNCMiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1LjEgV2luZG93cyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkY5QjE2MkY1MkMzREUyMTE5NjFGQUM0MTc4ODg5QTcwIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkQ3OUM0MURCQ0U2N0RGMTE5NDI0RUZCMkRGRUNBNDFEIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+PJgYVAAAAZZJREFUeNqck99LwlAUx8+G9JcIKtJTJArKTCE0JUh68p/wqQdBQkJQ/O0/EQhBMKRJKwe9aJkI6UvQv3J3O2dsl9UmSQc+fHfP7vly7t0ZcM5hNBpx0v8QAAzGmGVSqVQk2BH5STyHco0cISvkRisupjK9NE0TotEoDIdD7ld8psYLkgkakkAObNUwn5GdDtLptGUyGAw8JibjTYQUHs4X4DwjbdEBoSiKrwluDFHB9OLVWpPaBkHRgUMqlYJIJAL9fl+YyAw+EciNY9aalNbIlzBwuiAck16vx+0Oak7bp7fH7iNUfxzBTTKZhHA4DN1ulz+WlypuLiFzu5A0j3k94O6AwjAM2G63IMuyhSRJ0Ol0+NPVO33i+98XHHA6IJPZbGYV1+t1zzxMst45KD4vpsJA13XYbDbQaDQ8xWomXiAPVyqBaJjPCoP1eg2tVst3Ehnw5o4BbQsDPOfOMWach0gvjTeRuzuxPmlQoh/irxgrsQ+UQ59XKxn2COyghoAP1b0Myi9LFe+hhMwRsDWPef1bgAEAeHxVPb0u7pAAAAAASUVORK5CYII='), auto
+}
+
+.rodal {
+  z-index: 1000 !important;
+
+  .dialogContent {
+    padding: 10px;
+  }
+  .dialogBtnPanel {
+    text-align: center;
+    border-top: 1px solid #ccc;
+    padding: 5px;
+  }
+}
+
+
+
+div.socialLogin {
+  position: absolute;
+  right: 330px;
+  top: 30px;
+  left: auto;
+}
+
+
+.leaflet-container .leaflet-control-attribution {
+  background: $mainMedium;
+  color: rgba(255,255,255,.6);
+
+  a {
+    color: $primaryCol;
+  }
+}
+.leaflet-control-layers, .leaflet-bar {
+  border: none !important;
+  background: $mainMedium;
+  color: #fff;
+  border-radius: 0;
+  margin-top: 15px !important;
+}
+.leaflet-control-layers-toggle {
+  background-image: url(layers.png);
+  border: none;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.leaflet-retina .leaflet-control-layers-toggle {
+  background-image: url(layers2x.png)
+}
+.leaflet-bar a {
+  background: $mainMedium;
+  color: #ddd;
+  &:hover {
+    background: $mainDark;
+    color: #fff;
+  }
+}
+
+#aboutSentinel {
+  position: absolute;
+  left: 50%;
+  background: $mainMedium;
+  color: $primaryCol;
+  bottom: 0;
+  z-index: 10;
+  padding: 2px;
+  font-size: 11px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.shareBar {
+  position: absolute;
+  left: 0;
+  bottom:0px;
+  right: 0;
+  background: rgba(0,0,0,.5);
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  transition: all ease 0.5s;
+}
+.shareBar a {
+  color: #fff;
+  opacity: .7;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 2px 4px;
+}
+.shareBar a:hover {
+  opacity: 1;
+}
+
+@media screen and (max-width: 700px) {
+  .leaflet-control-zoom {
+    display: none;
+  }
+
+  #aboutSentinel {
+    left: auto;
+    right: 0;
+    bottom: 20px;
+  }
+}
