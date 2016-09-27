@@ -9,7 +9,10 @@ export function loadGetCapabilities() {
             .accept('xml')
             .parse(xml2jsParser)
             .end((err, res) => {
-                if (res) {
+                if (res === undefined) {
+                    window.location.reload()
+                }
+                if (res.ok) {
                     parseString(res.text, function (err, result) {
                         if (result) {
                             let layers = result.WMT_MS_Capabilities.Capability[0].Layer[0].Layer
@@ -86,7 +89,7 @@ export function queryAvailableDates(bounds) {
             .type('json')
             .send(polygon)
             .end((err, res) => {
-                if (!err) {
+                if (res.ok) {
                     Store.setAvailableDates(JSON.parse(res.text));
                     resolve()
                 } else {

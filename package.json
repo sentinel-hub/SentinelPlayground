@@ -13,7 +13,7 @@
     "dragula": "^3.7.1",
     "fbemitter": "^2.1.1",
     "font-awesome": "^4.6.3",
-    "leaflet": "^1.0.0-rc.3",
+    "leaflet": "1.0.0-rc.3",
     "lodash": "^4.15.0",
     "moment": "^2.14.1",
     "nprogress": "^0.2.0",

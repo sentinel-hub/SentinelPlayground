@@ -21,7 +21,7 @@ class CodeMirror extends React.Component {
         }
 
         return <div style={{clear: 'both'}}>
-            <Codemirror value={atob(Store.current.evalscript)} onChange={this.updateCode} options={options} />
+            <Codemirror value={atob(Store.current.evalscript.replace(/\==/g, ''))} onChange={this.updateCode} options={options} />
             <div className="scriptBtnPanel">
               <button onClick={Store.refresh} className="btn"><i className="fa fa-refresh"></i>Refresh</button>
             </div>

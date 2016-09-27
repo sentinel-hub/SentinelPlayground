@@ -113,7 +113,7 @@ function generateWmsUrl() {
   url.addQuery('TRANSPARENT', '1')
   url.addQuery('TIME', `2015-01-01/${this.selectedDate.format(this.dateFormat)}`)
   url.addQuery('BBOX', calcBboxFromXY([this.lat, this.lng], this.zoom).join(','))
-  if (this.evalscript !== '')
+  if (this.evalscript !== '' && this.preset === 'CUSTOM')
     url.addQuery('EVALSCRIPT', this.evalscript)
 
   const browserUrl = url.toString().replace(/\%2f/gi, '/').replace(/\%2c/gi, ',')

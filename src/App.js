@@ -91,7 +91,11 @@ class App extends Component {
         if (parsedObj['preset'] === 'CUSTOM') {
           let l = value.split(',')
           parsedObj[key] = {r: l[0], g: l[1], b: l[2]}
+          parsedObj['currView'] = Store.current.views.BANDS 
         }
+      } else if (key === 'evalscript' && value !== '') { 
+        parsedObj[key] = value + "==" 
+        parsedObj['currView'] = Store.current.views.SCRIPT 
       } else {
         parsedObj[key] = value
       }
