@@ -13,7 +13,7 @@ For state management it uses [Redux](https://github.com/reactjs/redux). Map is b
 ```
 
 ## Acquiring Sentinel API key
-To use Sentinel WMS service, you need to have your API key. You can get test API key by writing mail to [info@sentinel-hub.com](mailto:info@sinergise.com).
+To use Sentinel WMS service, you need to have your API key. You can get test API key by writing mail to [info@sinergise.com](mailto:info@sinergise.com).
 For more info about WMS service, check (www.sentinel-hub.com/apps/wms)[http://www.sentinel-hub.com/apps/wms].
 
 ## Have more ideas?
