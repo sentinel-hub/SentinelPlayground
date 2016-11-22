@@ -1,3 +1,5 @@
+[![Join the chat at https://gitter.im/sinergise/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sinergise/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Sentinel Playground has been pushed open-source to provide more easier start for anyone who's trying to try Sentinel Hub WMS service.
 Project is built with [React](https://facebook.github.io/react/), more specifically with [Create React App](https://github.com/facebookincubator/create-react-app).
 For state management it uses [Redux](https://github.com/reactjs/redux). Map is based on [Leaflet](http://leafletjs.com/).
