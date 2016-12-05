@@ -8,7 +8,7 @@ const common = {
   urls = {
     baseIndexUrl: common.baseWmsUrl,
     serviceWmsUrl: `${common.baseWmsUrl}/v1/wms/${common.instanceID}`,
-    capabilitiesUrl: `${common.baseWmsUrl}/v1/wms/${common.instanceID}?SERVICE=WMS&REQUEST=GetCapabilities`,
+    capabilitiesUrl: `${common.baseWmsUrl}/v1/wms/${common.instanceID}?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0`,
     baseImgWmsUrl: `${common.baseWmsUrl}/v1/wms/${common.instanceID}?SERVICE=WMS&REQUEST=GetMap`
   },
   views = {
