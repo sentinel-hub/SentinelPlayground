@@ -15,7 +15,7 @@ export function loadGetCapabilities() {
                 if (res.ok) {
                     parseString(res.text, function (err, result) {
                         if (result) {
-                            let layers = result.WMT_MS_Capabilities.Capability[0].Layer[0].Layer
+                            let layers = result.WMS_Capabilities.Capability[0].Layer[0].Layer
                             var myRegexp = /^B[0-9][0-9A]/i; //excluse "B01", "B8A" etc. layer names
                             let preset = null, channels = []
                             let presets = Store.current.presets
