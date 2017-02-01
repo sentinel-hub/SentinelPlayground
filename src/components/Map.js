@@ -41,7 +41,6 @@ class RootMap extends React.Component {
     sentL = L.tileLayer.wms(`${serviceWmsUrl}?showLogo=false`, {
       attribution: '&copy; <a href="http://www.sentinel-hub.com" target="_blank">Sentinel layer</a> contributors',
       tileSize: 512,
-      crs: L.CRS.EPSG4326,
       minZoom: 6,
       maxZoom: 16,
       name: 'sentinel2',
