@@ -8,7 +8,59 @@ class SearchBox extends React.Component {
     this.state = {
       isSearchVisible: false
     }
+    this.handleClickOutside = this.handleClickOutside.bind(this); 
   }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize)
+    this.handleResize()
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize)
+  }
+
+  handleResize(nextToolsVisible = null) {
+    let toolsVisible = null
+      try {
+        toolsVisible = this.props.toolsVisible
+      } catch(e) {}
+
+    if(toolsVisible === null) return
+
+    if(nextToolsVisible !== null){
+      toolsVisible = nextToolsVisible
+    }
+
+    let baseWidth = 130 // bottom equation for width 130 !!!.. non-parametrized :(
+    let viewport = window.innerWidth;
+    let searchBox = document.querySelector('#searchBox .geosuggest')
+    
+    if(searchBox ===null) return
+
+    if(viewport > 700 && viewport < 811 && toolsVisible) {
+      let newWidth = (9/11)*viewport + (-5860/11)
+      newWidth = Math.floor(newWidth)
+
+      searchBox.style.width = newWidth + 'px'
+    } else {
+      searchBox.style.width = `${baseWidth}px`
+    }
+  }
+
+  componentWillUpdate(nextProps, nextSize) {
+    let nextToolsVisible = nextProps.toolsVisible
+
+    if(nextToolsVisible) {
+      this.handleResize(nextProps.toolsVisible)
+    } else {
+      setTimeout(() => {
+        this.handleResize()
+      }, 700) // transition is of the same speed as #tools
+    }
+    
+  }
+
   handleClickOutside() {
     this.setState({isSearchVisible: false});
   }
@@ -24,7 +76,8 @@ class SearchBox extends React.Component {
 }
 
 SearchBox.propTypes = {
-  onLocationPicked: React.PropTypes.func
+  onLocationPicked: React.PropTypes.func,
+  toolsVisible: React.PropTypes.bool
 };
 
 export default onClickOutside(SearchBox)

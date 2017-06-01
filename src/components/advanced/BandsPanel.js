@@ -3,6 +3,7 @@ import _   from 'lodash'
 import Store from '../../store'
 import {connect} from 'react-redux'
 import dragula from 'react-dragula'
+import {getMultipliedLayers} from '../../utils/utils'
 import 'react-dragula/dist/dragula.min.css'
 import 'style!css!sass!./bands.scss';
 
@@ -20,7 +21,7 @@ class BandsPanel extends React.Component {
                 return true
             },
             accepts: function (el, target, source, sibling) {
-                return target !== colorsHolder;
+                return target !== colorsHolder; // elements can be dropped in any of the `containers` by default
             },
             copy: true
         }).on('drop', (el, target, source, sibling) => {
@@ -45,7 +46,7 @@ class BandsPanel extends React.Component {
 
             document.getElementById("colorsWrap").classList.remove("ondrag")
             Store.setLayers(layers)
-            Store.setEvalScript(btoa("return [" + _.values(Store.current.layers).join(",") + "]"))
+            Store.setEvalScript(btoa("return [" + getMultipliedLayers(Store.current.layers) + "]"))
         }).on('drag', (el, source) => {
             if (colorsHolder === source) {
                 document.getElementById("colorsWrap").classList.add("ondrag")
@@ -71,6 +72,23 @@ class BandsPanel extends React.Component {
         }
     }
 
+    //dragula and react render overlaps and strange things happening
+    renderOutput() {
+        let items = []
+        for (let i in Store.current.layers) {
+            if (Store.current.layers.hasOwnProperty(i)) {
+                let l = i.toUpperCase()
+                let name = Store.current.layers[i]
+                let channel = this.getChannel(name, "name")
+                items.push(<b>{l}:</b>)
+                items.push(<div key={l} className="colHolder" ref={"colTar" + l}
+                                data-col-prefix={l.toLowerCase()}>{(name !== 'NULL') ?
+                    <div style={{backgroundColor: channel.color}} title={channel.desc}>{name}</div> : null}</div>)
+            }
+        }
+        return items
+    }
+
     getWarning() {
         if (_.includes(Store.current.layers, 'NULL')) {
             return (
@@ -81,13 +99,14 @@ class BandsPanel extends React.Component {
 
     render() {
         return (<div id="colorsWrap">
-            <p>Pick different band and drag into to RGB fields</p>
+            <p style={{fontSize: '12px', textAlign: 'center'}}>Drag bands onto RGB fields.</p>
             <div className='colorsContainer' ref="colorsHolder" id="colorsHolder">
                 { Store.current.channels.map((channel, i) =>
                     <div key={i} title={channel.desc} style={{backgroundColor: channel.color}}>{channel.name}</div>
                 )}
             </div>
             <div id="colorsOutput" ref="colorsOutput">
+                {/*this.renderOutput()*/}
                 <b>R:</b>
                 <div className="colHolder" data-col-prefix="r" ref="colTarR" id="oR"></div>
                 <b>G:</b>

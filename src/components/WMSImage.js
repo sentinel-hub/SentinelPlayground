@@ -1,9 +1,10 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 
 class WMSImage extends React.Component {
 
   writeToLocalStorage() {
-    const img = this.refs.wmsImage
+    const img = ReactDOM.findDOMNode(this)
     img.addEventListener("load", () => {
       var imgCanvas = document.createElement("canvas"),
         imgContext = imgCanvas.getContext("2d");
@@ -27,7 +28,7 @@ class WMSImage extends React.Component {
   }
 
   render() {
-    return <img className="icon" crossOrigin="Anonymous" ref='wmsImage' src={this.props.src}/>
+    return <img className="icon" crossOrigin="Anonymous" src={this.props.src}/>
   }
 }
 

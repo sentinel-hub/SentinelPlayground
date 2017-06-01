@@ -8,6 +8,9 @@ html, body, #root {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+a {
+  color: $primaryCol
+}
 #nprogress .bar {
   background: $primaryCol;
   .peg {
@@ -133,13 +136,16 @@ div.socialLogin {
   background: $mainMedium;
   color: #fff;
   border-radius: 0;
-  margin-top: 15px !important;
+  /*margin-top: 15px !important;*/
+  margin-top: 10px !important;
 }
 .leaflet-control-layers-toggle {
   background-image: url(layers.png);
   border: none;
   width: 40px !important;
   height: 40px !important;
+  box-shadow: 0 2px 5px #000;
+  overflow: visible;
 }
 
 .leaflet-retina .leaflet-control-layers-toggle {
@@ -161,7 +167,9 @@ div.socialLogin {
   color: $primaryCol;
   bottom: 0;
   z-index: 10;
-  padding: 2px;
+  /*padding: 2px;*/
+  padding-left: 5px;
+  padding-right: 5px;
   font-size: 11px;
   text-decoration: none;
   cursor: pointer;
@@ -177,17 +185,36 @@ div.socialLogin {
   padding: 10px;
   text-align: center;
   transition: all ease 0.5s;
+  
+  a, button {
+    color: #fff;
+    opacity: .7;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 2px 4px;
+  }
+  a:hover, button:hover {
+    opacity: 1;
+  }
 }
-.shareBar a {
-  color: #fff;
-  opacity: .7;
-  display: inline-block;
-  vertical-align: middle;
-  margin: 2px 4px;
-}
-.shareBar a:hover {
-  opacity: 1;
-}
+
+.copyNotification { 
+  background: $mainDark; 
+  padding: 10px; 
+  color: #00a600; 
+  position: fixed; 
+  left: 50%; 
+  top: -100px; 
+  z-index: 10000; 
+  margin-left: -170px; 
+  width: 300px; 
+  text-align: center; 
+  transition: all ease 0.4s; 
+ 
+  &.visible { 
+    top: 30px; 
+  } 
+} 
 
 @media screen and (max-width: 700px) {
   .leaflet-control-zoom {
@@ -197,6 +224,6 @@ div.socialLogin {
   #aboutSentinel {
     left: auto;
     right: 0;
-    bottom: 20px;
+    bottom: 16px;
   }
 }

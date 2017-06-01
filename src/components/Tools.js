@@ -18,8 +18,16 @@ class Tools extends React.Component {
   }
 
   handleResize = () => {
+    let viewportWidth = window.innerWidth;
+    let bottomMargin = 37;
+    if(viewportWidth < 701) {
+      bottomMargin = 46;
+    }
+
+
+
     this.setState({
-      tabHeight: window.innerHeight - (menuPanel.offsetHeight + 45 + this.refs.footer.offsetHeight + 30),
+      tabHeight: window.innerHeight - (menuPanel.offsetHeight + 45 + this.refs.footer.offsetHeight + bottomMargin),
     });
     this.props.onResize()
   }
@@ -64,7 +72,7 @@ class Tools extends React.Component {
       </header>
       <Tabs onMount={this.onMount} style={{height: this.state.tabHeight}}>
         <Tabs.Panel key={1} title={[<i className='fa fa-paint-brush'></i>, "Rendering"]}>
-          <SimplePresetsHolder key={1} />
+          <SimplePresetsHolder key={1} toggleLegendModal={this.props.toggleLegendModal}/>
         </Tabs.Panel>
         <Tabs.Panel key={2} title={[<i className='fa fa-sliders'></i>, "Effects"]}>
           <EffectsPanel key={1}/>

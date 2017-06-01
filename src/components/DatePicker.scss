@@ -26,16 +26,19 @@ div.react-date-picker__decade-view--theme-default .react-date-picker__decade-vie
 }
 
 div.react-date-picker__month-view--theme-default .react-date-picker__month-view-day .react-date-picker__month-view-day-text:hover {
-  border-color: $primaryCol;
+  border-color: $primaryColLighter;
   background: none;
+  /*background: $mainMedium;*/
   color: #fff;
 }
 div.react-date-picker__month-view--theme-default .react-date-picker__month-view-day--active .react-date-picker__month-view-day-text,
 div.react-date-picker__year-view--theme-default .react-date-picker__year-view-month--active.react-date-picker__year-view-month--value,
 div.react-date-picker__decade-view--theme-default .react-date-picker__decade-view-year--active.react-date-picker__decade-view-year--value,
 div.react-date-picker__month-view--theme-default .react-date-picker__month-view-day--value .react-date-picker__month-view-day-text {
-  border-color: $primaryCol;
-  background: $primaryCol;
+  /*border-color: $primaryCol;*/
+  /*background: $primaryCol;*/
+  border-color: $primaryColLighter;
+  background: none;
 }
 .react-date-picker__footer--theme-default .react-date-picker__footer-button:not(.react-date-picker__footer-button--disabled) {
   background: none;
@@ -91,12 +94,14 @@ div.react-date-picker__month-view--theme-default {
 input.react-date-field__input {
   background: none;
   color: #eee;
-  width: 100px;
+  width: 80px;
   border: none !important;
+  text-align: center;
 }
 
 .hasData {
-  background: #444 !important;
+  /*background: #444 !important;*/
+  background: #a1a1a1 !important;
   color: #fff !important;
   border-radius: 40px;
   border: none !important
@@ -112,5 +117,52 @@ div.react-date-field--theme-default {
   div.react-date-field--theme-default > .react-date-field__picker {
     left: auto;
     right: 70%;
+  }
+}
+
+/* new */
+#dateFloat {
+  display: inline-block;
+}
+
+.hasDataFullCloud {
+  background: #565656 !important;
+  color: #fff !important;
+  border-radius: 40px;
+  border: none !important
+}
+
+i.fa.cal-icon-left,
+i.fa.cal-icon-right,
+i.fa.cal-icon-cal {
+  width: $controlsHeight/2;
+}
+
+i.fa.cal-icon-left:hover,
+i.fa.cal-icon-right:hover {
+  cursor: pointer;
+}
+
+i.fa.cal-icon-left.disabled,
+i.fa.cal-icon-right.disabled {
+  color: $textColor;
+}
+
+@media screen and (max-width: 700px) {
+  i.fa.cal-icon-left,
+  i.fa.cal-icon-right {
+    display: none;
+  }
+
+  i.fa.cal-icon-cal {
+    width: $controlsHeight;
+  }
+}
+
+@media screen and (max-width: 810px) {
+  input.react-date-field__input {
+    width: 65px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }

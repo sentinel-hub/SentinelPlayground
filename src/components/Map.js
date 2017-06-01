@@ -3,11 +3,11 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import _ from 'lodash'
 import NProgress from 'nprogress'
-import {queryAvailableDates} from '../utils/ajax'
 import Store from '../store'
 import {connect} from 'react-redux'
-import {EventEmitter} from 'fbemitter'
 import 'nprogress/nprogress.css'
+import {getMultipliedLayers} from '../utils/utils'
+import {whichVisualizationDoISee, isRgbNull} from '../utils/activeView'
 
 
 const styles = {
@@ -19,7 +19,6 @@ const styles = {
     margin: 0
   }
 }
-var sentL;
 
 class RootMap extends React.Component {
   constructor(props) {
@@ -27,21 +26,22 @@ class RootMap extends React.Component {
     this.state = {
       activeLayers: []
     }
-
-    this.events = new EventEmitter()
+    this.sentL = null
+    this.mainMap = null
   }
 
   componentDidMount() {
-    const {serviceWmsUrl, mapId, center, zoom} = this.props
+    const {mapId, center, zoom} = this.props
 
-    var osm = L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a> contributors',
-      name: 'osm'
-    })
-    sentL = L.tileLayer.wms(`${serviceWmsUrl}?showLogo=false`, {
-      attribution: '&copy; <a href="http://www.sentinel-hub.com" target="_blank">Sentinel layer</a> contributors',
+    var osm = L.tileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+      maxZoom: 20,
+      attribution: '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+    this.sentL = L.tileLayer.wms(`${Store.getWmsUrl}?showLogo=false`, {
+      attribution: '&copy; <a href="http://www.sentinel-hub.com" target="_blank">Sentinel Hub</a>',
       tileSize: 512,
-      minZoom: 6,
+      minZoom: 7,
+      layers: Store.current.preset,
       maxZoom: 16,
       name: 'sentinel2',
       prettyName: 'Sentinel 2'
@@ -53,45 +53,44 @@ class RootMap extends React.Component {
     });
 
 
-    sentL.on('load', function (e) {
+    this.sentL.on('load', function (e) {
       NProgress.done();
     })
-    sentL.on('loading', function (e) {
+    this.sentL.on('loading', function (e) {
       NProgress.start();
       NProgress.inc(0.3);
     })
-    sentL.on('tileerror', function (e) {
+    this.sentL.on('tileerror', function (e) {
       NProgress.done();
     })
 
-    let sentinelMap = L.map(mapId, {
+    this.mainMap = L.map(mapId, {
       center: center,
       zoom,
-      layers: [osm, sentL]
+      layers: [osm]
     })
-    window.sgmap = sentinelMap
 
     var overlayMaps = {
-      "Sentinel 2": sentL
+      "Sentinel 2": this.sentL
     };
 
-    L.control.layers(null,overlayMaps).addTo(sentinelMap)
+    this.updateSentinelLayer();
+    let control = L.control.layers(null,overlayMaps).addTo(this.mainMap)
 
-    sentinelMap.zoomControl.setPosition('bottomright')
-    sentinelMap.on('moveend', () => {
-      Store.setMapBounds(sentinelMap.getBounds())
-      Store.setLat(sentinelMap.getCenter().lat)
-      Store.setLng(sentinelMap.getCenter().lng)
-      Store.setZoom(sentinelMap.getZoom())
-      this.handleMoveEnd(sentinelMap.getBounds())
+    this.mainMap.zoomControl.setPosition('bottomright')
+    this.mainMap.on('moveend', () => {
+      Store.setMapBounds(this.mainMap.getBounds())
+      Store.setLat(this.mainMap.getCenter().lat)
+      Store.setLng(this.mainMap.getCenter().wrap().lng)
+      Store.setZoom(this.mainMap.getZoom())
     })
 
-    sentinelMap.on('overlayadd', (e) => {
+    this.mainMap.on('overlayadd', (e) => {
      this.writeCurrActiveLayer(e.layer.options)
     })
 
 
-    sentinelMap.on('overlayremove', (e) => {
+    this.mainMap.on('overlayremove', (e) => {
       let arr = this.state.activeLayers
       _.pull(arr, e.layer.options.name)
       this.setState({activeLayers: arr})
@@ -106,15 +105,16 @@ class RootMap extends React.Component {
       updateWhenIdle: true,
       imperial: false,
       position: "bottomleft"
-    }).addTo(sentinelMap)
+    }).addTo(this.mainMap)
 
-    sentinelMap.setView([Store.current.lat, Store.current.lng], Store.current.zoom)
-    queryAvailableDates(sentinelMap.getBounds())
-    this.events.emit('ready', sentinelMap)
+    this.mainMap.setView([Store.current.lat, Store.current.lng], Store.current.zoom)
   }
 
   componentDidUpdate(nextProp, nextState) {
     if (_.get(this, 'props.action.type') === 'REFRESH' && !_.isEqual(this.props, nextProp)) {
+      this.updateSentinelLayer()
+    }
+    if (nextProp.showDates !== Store.current.showDates) {
       this.updateSentinelLayer()
     }
   }
@@ -125,37 +125,63 @@ class RootMap extends React.Component {
     return Store.current.preset === 'CUSTOM'
   }
   getLayersString() {
-    return this.isCustom() ? _.values(Store.current.layers).join(",") : Store.current.preset
+    let isDate = Store.current.showDates ? ",DATE" : ""
+    return (this.isCustom() ? _.values(Store.current.layers).join(",") : Store.current.preset) + isDate
   }
 
-
+  updatePosition() {
+    this.mainMap.setView([Store.current.lat, Store.current.lng], Store.current.zoom);
+  }
+  
   updateSentinelLayer() {
+    const {renderedEvalScript, views} = Store.current
     let format = Store.current.dateFormat
     let date = `${Store.current.minDate}/${Store.current.selectedDate.format(format)}`;
-    let colcors = Store.current.colCor
+    let atmFilter = Store.current.atmFilter
     let layers = this.getLayersString()
+    let isEvalScriptFromLayers = Store.current.evalscript === btoa("return [" + getMultipliedLayers(Store.current.layers) + "]")
+    let paramObj = {}
     let evalS = ''
+    delete this.sentL.wmsParams.evalscript
     if (this.isCustom()) {
-      if (Store.current.evalscript !== '') {
+      if (!isEvalScriptFromLayers) {
         evalS = Store.current.evalscript
+
+        // set rendered evalscript to something
+        if(evalS !== '') {
+          Store.setRenderedEvalscript(evalS)
+        } 
+
+        paramObj.evalscript = evalS
+        paramObj.evalsource = Store.current.source || 'S2'
+      } else {
+        //set rendered evalscript to ''
+        Store.setRenderedEvalscript('')
       }
-      colcors += ",BOOST"
+      paramObj.PREVIEW = 3
+    } else {
+      Store.setRenderedEvalscript('')
+    }
+    paramObj.maxcc = Store.current.maxcc
+    paramObj.layers = layers
+    paramObj.priority = Store.current.priority
+    paramObj.gain = Store.current.gain
+    paramObj.gamma = Store.current.gamma
+    paramObj.ATMFILTER = atmFilter
+    paramObj.CLOUDCORRECTION = Store.current.cloudCorrection
+    paramObj.time = date
+    if (!this.mainMap.hasLayer(this.sentL)) {
+       this.mainMap.addLayer(this.sentL)
     }
 
-    sentL.setParams({
-      maxcc: Store.current.maxcc,
-      layers: layers,
-      priority: Store.current.priority,
-      gain: Store.current.gain,
-      evalscript: evalS,
-      COLCOR: colcors,
-      CLOUDCORRECTION: Store.current.cloudCorrection,
-      time: date
-    });
-  }
+    if(whichVisualizationDoISee() === views.BANDS && isRgbNull()) {
+      this.sentL.setOpacity(0)      
+      delete paramObj.layers
+    } else {
+      this.sentL.setOpacity(1)
+    }
 
-  handleMoveEnd(bounds) {
-    queryAvailableDates(bounds)
+    this.sentL.setParams(paramObj);
   }
 
   render() {
@@ -165,4 +191,4 @@ class RootMap extends React.Component {
   }
 }
 
-export default connect(store => store)(RootMap)
+export default connect(store => store, null, null, { withRef: true })(RootMap)

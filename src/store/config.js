@@ -2,14 +2,9 @@ import moment from 'moment'
 
 const common = {
     mapId: "mapId",
-    baseWmsUrl: "http://services.sentinel-hub.com",
-    instanceID: "YOUR_SENTINEL_API"
-  },
-  urls = {
-    baseIndexUrl: common.baseWmsUrl,
-    serviceWmsUrl: `${common.baseWmsUrl}/v1/wms/${common.instanceID}`,
-    capabilitiesUrl: `${common.baseWmsUrl}/v1/wms/${common.instanceID}?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0`,
-    baseImgWmsUrl: `${common.baseWmsUrl}/v1/wms/${common.instanceID}?SERVICE=WMS&REQUEST=GetMap`
+    baseWmsUrl: "services.sentinel-hub.com",
+    indexBaseUrl: "services.sentinel-hub.com",
+    instanceID: "YOUR_API_KEY"
   },
   views = {
     PRESETS: "1",
@@ -30,13 +25,14 @@ module.exports = {
     minmax: {min: 0, max: 16}
   },
   isLoaded: true,
-  lat: 51.37,
-  lng: -0.11,
-  zoom: 13,
+  lat: 40.4,
+  lng: -3.73,
+  zoom: 12,
   size: [0, 0],
   priority: 'mostRecent',
   mosaic: 'mostRecent',
   evalscript: '',
+  renderedEvalscript: '',
   opacity: 100,
   maxcc: 20,
   imgWmsUrl: "",
@@ -46,7 +42,11 @@ module.exports = {
   selectedDate: moment(),
   dateFormat: "YYYY-MM-DD",
   availableDays: [],
-  preset: "1_NATURAL_COLOR",
+  availableDaysAllCc: [],
+  prevDate: null,
+  nextDate: null,
+  showDates: false,
+  preset: "",
   currView: views.PRESETS,
   channels: [],
   path: '',
@@ -57,10 +57,17 @@ module.exports = {
       image: "image.jpg"
     },
   },
-  "colCor": '',
+  presetsLegend: [],
+  "atmFilter": '',
   "cloudCorrection": 'none',
   "gain": 1,
+  "gamma": 1,
+  legendVisible: false,
+  legendX: 0,
+  legendY: 0,
+  legendHeight: 0,
+  legendWidth: 0,
+  legendUrl: null,
   ...common,
-  ...urls,
   views
 }

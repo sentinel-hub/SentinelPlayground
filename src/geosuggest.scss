@@ -4,12 +4,14 @@
   font-size: 18px;
   font-size: 1rem;
   position: relative;
-  width: 180px;
+  width: 130px;
   margin: 0 auto;
   text-align: left;
   display: inline-block;
   vertical-align: middle;
   z-index: 10;
+  transition: width ease 0.1s;
+
 }
 .geosuggest__input {
   width: calc(100% - 15px);

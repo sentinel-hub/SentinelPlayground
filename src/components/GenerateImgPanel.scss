@@ -1,0 +1,9 @@
+.btn.disabled,
+.btn.disabled:hover {
+    background: #ddd;
+    color: black;
+}
+
+.btn.disabled:hover {
+    opacity: 0.7;
+}
