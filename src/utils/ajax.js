@@ -22,24 +22,27 @@ export function loadGetCapabilities() {
                             for (let l in layers) {
                                 if (layers.hasOwnProperty(l)) {
                                     var layerName = layers[l].Name[0]
-                                    if (layerName === "FILL") {
-                                        break
-                                    }
+                                    const splitName = layerName.split(".")[1]
+                                    if (layerName === "FILL" || splitName === "FILL") break
                                     if (!preset) {
                                         preset = layerName; //set first layer as default selection
                                     }
                                     if (!myRegexp.test(layerName)) {
+                                        let desc = layers[l].Abstract !== undefined ? layers[l].Abstract[0] : ""
                                         presets[layerName] = {
                                             name:  layers[l].Title[0],
-                                            desc:  layers[l].Abstract[0],
+                                            desc:  desc,
                                             image: `${Store.current.baseImgWmsUrl}&SHOWLOGO=false&LAYERS=${layerName}&BBOX=-19482,6718451,-18718,6719216&MAXCC=20&WIDTH=40&HEIGHT=40&gain=1&FORMAT=image/jpeg&bgcolor=00000000&transparent=1&TIME=2015-01-01/2016-08-04`
                                         }
                                     } else {
                                         //fill bands
+                                        let desc = layers[l].Abstract !== undefined ? layers[l].Abstract[0] : ""
+                                        let detailDesc = desc.indexOf("|") !== -1 ? layers[l].Abstract[0].split("|")[0] : desc
+                                        let color = desc.indexOf("|") !== -1 ? layers[l].Abstract[0].split("|")[1] : 'red'
                                         channels.push({
                                             name: layerName,
-                                            desc: layers[l].Abstract[0].split("|")[0],
-                                            color: (layers[l].Abstract[0].split("|")[1] !== undefined) ? layers[l].Abstract[0].split("|")[1] : "red"
+                                            desc: detailDesc,
+                                            color: color
                                         });
                                     }
                                 }
@@ -52,6 +55,8 @@ export function loadGetCapabilities() {
                             reject(err)
                         }
                     });
+                } else {
+                    window.location.reload()
                 }
             })
     })
@@ -60,18 +65,16 @@ export function loadGetCapabilities() {
 
 export function queryAvailableDates(bounds) {
     return new Promise((resolve, reject) => {
-        let ne = (bounds._northEast)
-        let sw = (bounds._southWest)
-        let minX = parseFloat(sw.lng);
-        let minY = parseFloat(sw.lat);
-        let maxX = parseFloat(ne.lng);
-        let maxY = parseFloat(ne.lat);
         var coords = [];
-        coords.push([minX, minY]);
-        coords.push([maxX, minY]);
-        coords.push([maxX, maxY]);
-        coords.push([minX, maxY]);
-        coords.push([minX, minY]);
+        let sw = bounds.getSouthWest(),
+              se = bounds.getSouthEast(),
+              ne = bounds.getNorthEast(),
+              nw = bounds.getNorthWest()
+              coords.push([sw.lng, sw.lat]),
+              coords.push([se.lng, se.lat]),
+              coords.push([ne.lng, ne.lat]),
+              coords.push([nw.lng, nw.lat]),
+              coords.push([sw.lng, sw.lat])
         var polygon = {
             "type": "Polygon",
             "crs": {
