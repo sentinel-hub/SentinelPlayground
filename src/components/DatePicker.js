@@ -1,10 +1,10 @@
 import React from 'react'
-import {DateField, MultiMonthView, MonthView} from 'react-date-picker';
+import {DateField, MonthView} from 'react-date-picker';
 import Store from '../store'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import onClickOutside from 'react-onclickoutside'
-import {getPrevNextByPoint} from '../utils/ajax'
+import {getPrevNextByPoint} from '../utils/datesHelper'
 
 import 'react-date-picker/index.css'
 
@@ -34,22 +34,23 @@ class MyDatePicker extends React.Component {
     }
 
     onDay = (props) => {
-        const {availableDays, availableDaysAllCc, dateFormat, maxcc} = Store.current
+        const {availableDays, dateFormat, maxcc} = Store.current
         let propDate = props.dateMoment.format(dateFormat)
 
-        let isInAvailableDays = availableDays.includes(propDate)
-        let isInAvailableDaysAllCc = availableDaysAllCc.includes(propDate)
+        let availableDay = availableDays.find(value => value.date === propDate)
+        let isInAvailableDays = availableDay !== undefined
+        
+        if(!isInAvailableDays) return props
+
+
         let className = props.className
-
-        if(isInAvailableDaysAllCc) {
+        if(isInAvailableDays && availableDay.cc > maxcc) 
             props.className = className + ' hasDataFullCloud'
-            props.title = `more than ${maxcc}% clouds`
-        }
 
-        if(isInAvailableDays) {
+        if(isInAvailableDays && availableDay.cc <= maxcc) 
             props.className = className + ' hasData'
-            props.title = `less than ${maxcc}% clouds`
-        }
+        
+        props.title = `Cloud coverage: ${availableDay.cc}`
 
         return props
     }
@@ -59,6 +60,7 @@ class MyDatePicker extends React.Component {
         document.activeElement.blur() //lose focus so you can pick datepicker again
         this.props.onSelect(e)
     }
+    // ok
     onChange = (e) => {
         this.setState({presumedSelectedDate: e})
     }
@@ -83,7 +85,8 @@ class MyDatePicker extends React.Component {
         if(whatItIs !== whatItShouldBe) return
 
         // now the presumed date and the actual value in input matches
-        Store.setDate(presumedSelectedDate)
+        let _d = moment(presumedSelectedDate, dateFormat)
+        Store.setDate(_d)
     }
 
     onBlur = () => {
@@ -120,7 +123,6 @@ class MyDatePicker extends React.Component {
 
         const {prev, next} = getPrevNextByPoint(availableDays, newDate, dateFormat)
         this.props.onExpand(undefined, false, true)
-
         Store.setDate(moment(newDate, dateFormat))
         Store.setPrevDate(prev)
         Store.setNextDate(next)
@@ -129,9 +131,7 @@ class MyDatePicker extends React.Component {
     // util
     _isInBounds(date) {
         const {minDate, maxDate, dateFormat} = Store.current
-        let miniDate = moment(minDate, dateFormat) // Store.minDate is <string> not instance of moment
-
-        let firstPoint = miniDate.startOf('month').unix()*1000
+        let firstPoint = moment(minDate).startOf('month').unix()*1000
         let lastPoint = maxDate.endOf('month').unix()*1000
         let ourPoint = date.unix()*1000
 
@@ -158,12 +158,14 @@ class MyDatePicker extends React.Component {
                     dateFormat={dateFormat}
                     updateOnDateClick={true}
                     strict={false}
+                    onFocus={() => this.setState({isDateVisible: true})}
                     clearIcon={false}
                     showClock={false}
                     onChange={this.onChange}
                     onTextChange={this.onTextChange}
                     onExpand={this.props.onExpand}
                     onBlur={this.onBlur}
+                    expanded={this.state.isDateVisible}
                     minDate={Store.current.minDate}
                     maxDate={Store.current.maxDate}
                     value={this.state.dateString}>
@@ -200,6 +202,6 @@ MyDatePicker.PropTypes = {
     onSelect: React.PropTypes.func,
     onExpand: React.PropTypes.func,
 }
-export default connect(store => store)(onClickOutside(MyDatePicker))
+export default connect(store => store)(MyDatePicker)
 
 

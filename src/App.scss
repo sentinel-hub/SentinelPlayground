@@ -1,4 +1,4 @@
-@import 'variables';
+@import 'variables.scss';
 
 #root {
     overflow: hidden;
@@ -20,7 +20,7 @@
     height: 30px;
     text-align: center;
     line-height: 30px;
-
+    
     &.active {
         background: $primaryCol;
         color: #fff
@@ -35,7 +35,7 @@
     cursor: move;
     z-index: 2;
     position: absolute;
-    color: #fff;
+    color: #f4f4f4;
     
     p {
         margin: 0 0 10px;
@@ -56,11 +56,12 @@
     height: 50px;
     position: fixed;
     padding-top: $basicPadding;
-    z-index: 100;
-
+    z-index: 1;
+    
     .pull-left {
         position: relative;
         float: left;
+        margin-top: -10px;
     }
 
     .pull-right {
@@ -70,7 +71,7 @@
 
     .half-size {
         width: 49%;
-    }
+       }
 
     .m-l-1 {
         margin-left: $basicMargin;
@@ -82,7 +83,6 @@
     padding-left: $toolsWidth + $basicPadding;
     transition: all ease $controlsTransitionTime;
 }
-
 #Controls.hidden #ControlsContent {
     padding-left: 53px;
 }
@@ -113,6 +113,7 @@ div.clear-both-700{
 @media screen and (max-width: 700px) {
     #dateFloat, #searchBox {
         width: $controlsHeight;
+        background-color: #233c50;
     }
 
     #dateFloat.active span, #searchBox.active span {
@@ -142,15 +143,197 @@ div.clear-both-700{
 
     .floatItem .cloudHolder {
         right: 51px;
-        top: 52px;
+        top: 0px;
         padding: 8px;
         padding-top: 9px;
         padding-bottom: 13px;
     }
-}
+    .floatItem.active > span{ /*klemen*/
+        display: none;
+    }
+  
+   }
 
 @media screen and (max-width: 700px) {
     .leaflet-control-layers.leaflet-control {
         box-shadow: none !important;
+    }
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #9ab7cd;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #9ab7cd;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #9ab7cd;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: #9ab7cd;
+}
+
+#separator{
+     color: #6e90ab;
+     margin-left:10px;
+}
+#separator1{
+    color: #6e90ab;
+    margin-right: 27px;
+}
+#head {
+    width: 100%;
+    height: 60px;
+    position: fixed;
+    background-color: #487191;
+    z-index:0;
+}
+
+.leaflet-bar a:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0px;
+    padding-right: 6px;
+    color: #9ab7cd;
+}
+
+.leaflet-bar a:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0px;
+    padding-left: 6px;
+    color: #9ab7cd;
+}
+@media screen and (max-width: 1186px) {
+    i.fa.fa-wrench{
+    background-color:#233B50!important;
+    white-space: nowrap;
+    width: 40px;
+    height: 40px !important;
+    line-height: 40px !important;
+    padding-right:0px!important;
+    position: fixed;
+    top: 73px;
+    right: 10px;
+}
+
+
+}
+@media screen and (max-width: 988px) {
+    #searchBox {
+        background-color: #233B50;
+        margin-top: 10px;
+        
+    }
+ 
+    i.fa.fa-wrench{
+        position:fixed;
+        top:73px;
+        right:10px;
+    }
+}
+
+
+
+
+
+
+@media screen and (max-width: 953px) {
+    i.fa.fa-wrench{
+        background-color: #233c50;
+        width:40px;
+        padding: 0px 0px!important;
+        border-right:none!important;
+        height:40px!important;
+        line-height: 40px!important;
+        margin-top:-3px!important;   
+    }
+}
+#head{
+    box-shadow: 0px 0px 7px black;
+
+}
+#colorsHolder div{
+   /* box-shadow: 0px 1px 4px black;*/
+}
+#colorsHolder div{
+    color: white;
+}
+#colorsOutput > div{
+/*box-shadow: 0px 1px 4px black;*/
+}
+.advancedPanel{
+    padding: 0;
+}
+.colorsContainer{
+    border-radius: 0;
+}
+.colorsContainer{
+    background-color: #41576b;
+
+}
+.leaflet-bottom .leaflet-control-scale {
+    margin-bottom: 17px;
+    margin-right: 0px;
+    }
+
+i.fa.fa-wrench{
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    line-height: 26px;
+    height: 30px;
+    margin-top: -3px;
+    padding-right: 10px;
+    }
+.pull-left.half-size.pull-right-700 {
+    width: auto!important;
+    white-space: nowrap;
+}
+.pull-right.half-size {
+   
+    white-space: nowrap;
+}
+#Controls .half-size{
+    width: 58%;
+}
+@media screen and (max-width: 700px) {
+i.fa.fa-wrench{
+    position:absolute;
+    top:0;
+    right:0; 
+    margin-right:0px!important;   
+}
+}
+@media screen and (max-width: 1050px){
+div.DevTools.floatItem.pull-right.leftOne{
+    margin-right:54px!important;
+}
+}
+.leaflet-bar {
+    box-shadow: none;
+}
+
+.leaflet-control-layers{
+    box-shadow: none;
+}
+
+@media screen and (max-width: 777px) {
+    #cloudFloat.floatItem.m-r-1-700.pull-right-700{
+        position:fixed;
+        background-color: #233c50;
+        margin-left:-150px;
+        margin-top:70px;
+        padding-right:10px;
+        padding-top:0px;padding-bottom:0px;
+        
+    }
+}
+@media screen and (max-width: 700px) {
+    #cloudFloat.floatItem.m-r-1-700.pull-right-700{
+        position:relative;
+        clear:both;
+        margin-left:0px;
+        margin-top:0px;
+        padding-right:0px;
+        left: 0px;
+        right:10px;
+        
     }
 }

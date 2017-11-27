@@ -1,4 +1,4 @@
-@import '../variables';
+@import '../variables.scss';
 
 #dateCompareFloat {
   margin-top: 50px;
@@ -36,7 +36,7 @@ div.react-date-picker__year-view--theme-default .react-date-picker__year-view-mo
 div.react-date-picker__decade-view--theme-default .react-date-picker__decade-view-year--active.react-date-picker__decade-view-year--value,
 div.react-date-picker__month-view--theme-default .react-date-picker__month-view-day--value .react-date-picker__month-view-day-text {
   /*border-color: $primaryCol;*/
-  /*background: $primaryCol;*/
+  /*background: white;*/
   border-color: $primaryColLighter;
   background: none;
 }
@@ -93,7 +93,7 @@ div.react-date-picker__month-view--theme-default {
 }
 input.react-date-field__input {
   background: none;
-  color: #eee;
+  color: #9ab7cd;
   width: 80px;
   border: none !important;
   text-align: center;
@@ -124,6 +124,14 @@ div.react-date-field--theme-default {
 #dateFloat {
   display: inline-block;
 }
+#dateFloat.floatItem.m-r-1-700.pull-right-700.active{
+  background-color: #557a97;
+  color: white!important;
+}
+
+#dateFloat.floatItem.m-r-1-700.pull-right-700.active input{
+    color: white!important;
+}
 
 .hasDataFullCloud {
   background: #565656 !important;
@@ -143,9 +151,14 @@ i.fa.cal-icon-right:hover {
   cursor: pointer;
 }
 
+i.fa.cal-icon-left,
+i.fa.cal-icon-right {
+  color: $textColor;
+}
+
 i.fa.cal-icon-left.disabled,
 i.fa.cal-icon-right.disabled {
-  color: $textColor;
+  color: #9ab7cd; 
 }
 
 @media screen and (max-width: 700px) {
@@ -161,8 +174,31 @@ i.fa.cal-icon-right.disabled {
 
 @media screen and (max-width: 810px) {
   input.react-date-field__input {
-    width: 65px;
+   /* width: 65px;danes*/
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
+}
+.react-date-field--picker-position-bottom > .react-date-field__picker{ /*koledar expanded*/
+  top: 41px!important;
+  left: -60px!important;
+}
+@media screen and (max-width: 953px){
+  .react-date-field--picker-position-bottom > .react-date-field__picker{
+    top: 41px!important;
+    left: -62px!important;
+ }
+ #dateFloat.floatItem.m-r-1-700.pull-right-700.active{
+  background-color: #233c50;
+  }
+}
+@media screen and (max-width: 700px){
+  .react-date-field--picker-position-bottom > .react-date-field__picker{
+    top:30px !important;
+    left: -270px!important;
+ }
+ &.floatItem > i {
+   clear:both;
+ }
+
 }

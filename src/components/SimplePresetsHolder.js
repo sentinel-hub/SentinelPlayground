@@ -107,18 +107,15 @@ class SimplePresetsHolder extends React.Component {
               {key === "CUSTOM"
                 ? <i className="icon fa fa-paint-brush" />
                 : <WMSImage
-                    onBase64Gen={b => this.saveBase64(key, b)}
+                    // onBase64Gen={b => this.saveBase64(key, b)}
                     alt={preset.name}
                     src={
-                      this.state.base64Urls[key] === undefined
-                        ? preset.image
-                        : this.state.base64Urls[key]
+                      preset.image
                     }
                     localStorageProp="test"
                   />}
               {preset.name}
               <small>{preset.desc}</small>
-
               {presetHasLegend &&
                 <div className={`legendIcon ${isActive && "active"}`}>
                   <i

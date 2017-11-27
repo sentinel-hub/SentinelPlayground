@@ -1,15 +1,15 @@
-@import '../variables';
-@import 'DatePicker';
+@import '../variables.scss';
+@import 'DatePicker.scss';
 
 #tools {
   position: absolute;
-  left: 10px;
+  /*left: 10px;*/
   top: 10px;
-  background: $mainLight;
+  background: #385168;
   z-index: 1;
   width: $toolsWidth;
-  color: $textColor;
-  box-shadow: 0 2px 5px #000;
+  color: #f4f4f4; /*$textColor; korekture miha*/
+  /*box-shadow: 0 2px 5px #000;*/
   transition: all ease $toolsTransitionTime;
 
   &.hidden {
@@ -17,9 +17,10 @@
   }
 
   & > header {
+    z-index: 1000;
     padding: 3px 10px 3px 52px;
     overflow: hidden;
-    background: $mainLight;
+    background: #487191;
 
     h2 {
       text-transform: uppercase;
@@ -41,9 +42,9 @@
   }
 
   footer {
-    text-align: center;
-    padding: 5px;
-    background: $mainMedium;
+    text-align: right;
+    padding: 15px;
+    /*background: $mainMedium;*/
 
     .btn {
       margin: 3px;
@@ -58,7 +59,7 @@
     padding-left: 65px;
     padding-top: 10px;
     min-height: 46px;
-    border-bottom: 1px solid #555;
+    border-bottom: 1px solid #777777;
     clear: both;
     cursor: pointer;
 
@@ -74,17 +75,17 @@
       display: block;
       background: $mainMedium;
       border: 3px solid transparent;
-    }
+    }/*
     &:hover {
-      opacity: .8;
-    }
+      opacity: 1;
+    } korekture miha*/
     &.active:hover,
     &.active {
       color: #fff;
       opacity: 1;
 
       .icon {
-        border: 3px solid $primaryCol;
+        border: 3px solid $mainLight;
       }
       small {
         color: #eee;
@@ -110,6 +111,7 @@
   background: $mainMedium;
   margin: 0;
   padding: 0;
+  font-size: 13px; /*korekture miha*/
 
   li {
     float: left;
@@ -146,37 +148,35 @@
 }
 .tab-panel {
   overflow: auto;
+  
 }
-
 .floatItem {
-  /*position: absolute;*/
-  /*top: 16px;*/
-  /*left: 384px;*/
-  background: $mainLight;
-  padding: 0;
-  color: #fff;
+  padding: 10px 0;
+  color: #9ab7cd!important;
   margin: 0;
   margin-left: $basicMargin;
-  /*height: 36px;*/
   height: $controlsHeight;
   border: none;
   overflow: visible;
-  box-shadow: 0 2px 5px #000;
 
+  &.active {
+    background: rgba(255,255,255,0.4);
+  }
   i {
     /*width: 36px;*/
     /*height: 36px;*/
     height: $controlsHeight;
     width: $controlsHeight;
-    background: $mainDark;
-    color: #fff;
+   /* background: $mainDark;*/
+    color: #9ab7cd;
     text-align: center;
     /*line-height: 34px;*/
     line-height: $controlsHeight - 2px;
 
     & + span {
       font-size: 15px;
-      padding: 0 16px;
+      /*padding: 0 16px;klemen*/
+      
     }
   }
 
@@ -192,6 +192,7 @@ div.rc-slider {
 
   .rc-slider-handle {
     border-color: $primaryCol;
+    border-radius: 50%;
   }
   .rc-slider-track {
     background: $primaryCol;
@@ -200,9 +201,7 @@ div.rc-slider {
 
 .cloudHolder {
   position: absolute;
-  /*left: 0px;*/
-  /*top: 37px;*/
-  background: $mainMedium;
+  background: #487191;
   padding: 6px;
   padding-bottom: 11px;
   z-index: 3;
@@ -212,19 +211,12 @@ div.rc-slider {
     position: absolute;
     left: 45px;
     top: -4px;
-    /*border-bottom: 4px solid $mainMedium;*/
-    /*border-left: 4px solid transparent;*/
-    /*border-right: 4px solid transparent;*/
   }
 }
-
 #cloudFloat {
   display: inline-block;
-  /*margin-left: 180px;*/
   margin-left: $basicMargin;
-  
 }
-
 .effectsPanel {
   padding: 10px;
 
@@ -232,6 +224,7 @@ div.rc-slider {
     clear: both;
     margin-bottom: 10px;
     display: block;
+    font-size: 14px;
 
     span {
       display: inline-block;
@@ -272,7 +265,6 @@ div.rc-slider {
 .react-toggle--checked .react-toggle-thumb {
   border-color: $primaryCol;
 }
-
 .deepartInfo {
   position: absolute;
   left: 20px;
@@ -324,7 +316,6 @@ div.rc-slider {
   overflow: auto;
   color: #fff;
 
-
   p {
     margin: 10px 50px 10px 10px;
   }
@@ -350,11 +341,9 @@ div.rc-slider {
 }
 
 #searchBox {
-  /*left: auto;*/
-  /*right: 80px;*/
   display: inline-block;
   float: right;
-  margin-right: $basicMargin;
+  margin-right: 100px;
   margin-left: -45px;
   margin-bottom: 10px;
 }
@@ -362,40 +351,45 @@ div.rc-slider {
 @media screen and (max-width: 700px) {
     #searchBox {
         margin-right: $basicMargin;
+         margin-bottom: 20px;
     }
 }
 
 #toggleSettings {
   display: block;
   position: absolute;
-  left: 19px;
+  left: 1px;
+  margin-right: 20px;
   top: 14px;
   color: #fff;
-  background: $mainMedium;
+  /*background: $mainMedium;*/
   border-radius: 40px;
   text-align: center;
   cursor: pointer;
   z-index: 101;
   transition: all ease 0.4s;
+  
 
   &.hidden {
     top: 9px;
-    left: 8px;
+    left: -4px;
   }
 
   i {
     margin: 5px;
     display: block;
-    width: 24px;
+    width: 32px;
     height: 24px;
     font-size: 15px;
     line-height: 24px;
     transition: all ease 0.4s;
+    border-right: 1px solid rgba(255,255,255,0.4);
   }
 
   i.fa-cogs {
     margin: 10px;
-    font-size: 20px;
+    font-size: 18px;
+   
   }
 
   &.open {
@@ -416,8 +410,11 @@ div.rc-slider {
 @media screen and (max-width: 700px) {
   #tools {
     width: calc(100% - 72px);
+    z-index: 0;
   }
+
   .floatItem {
+    padding: 0;
     z-index: 1;
     box-shadow: none;
     top: 76px;
@@ -454,13 +451,11 @@ div.rc-slider {
       box-shadow: 0 2px 10px #000;
     }
   }
-  #dateFloat {
-    /*margin-top: 40px;*/
-  }
+
   #cloudFloat {
-    /*margin-left: auto;*/
-    /*margin-top: 90px;*/
+    background-color: #233c50;
   }
+ 
   #searchBox {
     left: auto;
     z-index: 2;
@@ -484,6 +479,10 @@ div.rc-slider {
     width: 35px;
     height: 35px;
     line-height: 35px;
+    text-shadow: none!important;
+  }
+  #separator, #separator1{
+    display: none!important;
   }
 }
 @media screen and (min-width: 700px) {
@@ -493,4 +492,150 @@ div.rc-slider {
     padding: 5px;
     width: 60px;
   }
+}
+
+#tools header img{
+margin-bottom: 7px;
+}
+.floatItem i + span {
+  font-size: 14px;
+}
+#cloudFloat.floatItem.m-r-1-700.pull-right-700.active{
+  background-color: #557a97;
+  color:white!important;
+  padding-right: 10px;
+  }
+#cloudFloat.floatItem.m-r-1-700.pull-right-700.active i{
+  background-color: #557a97;
+  color:white!important;
+}
+.react-date-field--expanded{
+  background-color: #557a97;
+  color:white!important;
+}
+@media screen and (max-width: 700px) {
+#cloudFloat.floatItem.m-r-1-700.pull-right-700.active{
+  background-color: #557a97;
+  color:white!important;
+  padding-right: 0px!important;
+}
+#cloudFloat.floatItem.m-r-1-700.pull-right-700.active i{
+  background-color: #233c50;
+  color:#9ab7cd!important;
+  }
+  .cloudHolder{
+    background-color: #233c50;
+  }
+ }
+@media screen and (max-width: 953px) {
+   
+ #cloudFloat.floatItem.m-r-1-700.pull-right-700.active{
+   background-color: #233c50;
+   padding-right: 12px;
+   }
+ 
+ .geosuggest__input-wrapper{
+   background-color: #487191;
+  }
+  #searchBox.active.floatItem{
+   white-space: nowrap;
+   min-width: 140px;  
+  }
+  #searchBox.false.floatItem{
+   white-space: nowrap;
+   min-width: 140px;
+   margin-top: 10px;
+ }
+ .react-date-field--expanded{
+  background-color: #233c50;
+  }
+}
+@media screen and (max-width: 953px) {
+
+  .geosuggest__input-wrapper{
+    background-color: #233c50;
+    min-width: 100px;
+}
+   #separator{
+    display:none!important;
+  }
+  #cloudFloat.floatItem.m-r-1-700.pull-right-700.active i{
+    background-color: #233c50;
+  }
+  .cloudHolder{
+    z-index:10;
+  }
+  /*#cloudFloat {
+    background-color: #233c50!important;
+    }*/
+    #Controls .half-size{
+      width:49%!important;
+    }
+}
+@media screen and (max-width: 700px) {
+  #searchBox.active.floatItem{
+    min-width: 10px;
+  }
+  #searchBox.false.floatItem{
+    min-width: 10px;
+}
+  .floatItem.m-r-1-700.pull-right-700{
+     background-color: #233c50;
+     padding-right: 0px;
+  }
+   #cloudFloat.floatItem.m-r-1-700.pull-right-700.active{
+     background-color: #487191;
+     padding-right: 0px;
+  }
+    #cloudFloat.floatItem.m-r-1-700.pull-right-700.active i{
+     background-color: #233c50;
+     padding-right: 0px;
+     clear: both;
+  }
+    .cloudHolder{
+     margin-top:0px!important;
+   }
+   #searchBox.floatItem.active{
+    background-color: #233c50!important;
+  }
+}
+  #searchBox.floatItem.active{
+    background-color: #487191;
+  }
+  #searchBox.floatItem{
+    padding: 0;
+    }
+@media screen and (max-width: 882px) {
+    #cloudFloat.floatItem.m-r-1-700.pull-right-700{
+     padding-bottom: 10px;
+     padding-top: 10px;
+     clear: both;
+   }
+
+}
+.toggleBandMode:before{
+  background: $mainLight;
+}
+.react-toggle--checked .react-toggle-track, .react-toggle.react-toggle--checked:hover .react-toggle-track {
+  background: $mainLight!important;
+}
+.react-toggle-thumb {
+  background-color: #f4f4f4;
+}
+
+.rc-tooltip {
+  display: none;
+}
+
+@media screen and (max-width: 953px) {
+   #searchBox.floatItem{
+    background-color: #233c50;
+   }
+  #searchBox.active.floatItem{
+    margin-top: 10px;
+  }
+  #searchBox{
+    display:inline-block!important;
+  }
+
 }

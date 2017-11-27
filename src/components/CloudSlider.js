@@ -14,7 +14,16 @@ const CloudSlider = React.createClass({
     let state = this.state.isVisible;
     this.setState({ isVisible: !state });
   },
+  componentWillReceiveProps(nextProps) {
+    let currentMaxcc = this.state.maxcc
+    let newMaxcc = nextProps.maxcc
+    
 
+    if(currentMaxcc !== newMaxcc) {
+      this.setState({maxcc: newMaxcc})
+    }
+    
+  },
   handleClickOutside() {
     this.setState({ isVisible: false });
   },
@@ -28,7 +37,7 @@ const CloudSlider = React.createClass({
 
   render() {
     return (
-      <div className="floatItem m-r-1-700 pull-right-700" id="cloudFloat">
+      <div className={`floatItem m-r-1-700 pull-right-700 ${this.state.isVisible && 'active'}`} id="cloudFloat">
         <i className="fa fa-cloud" onClick={this.togglePanel} />
         <span onClick={this.togglePanel}>{this.state.maxcc} %</span>
         {this.state.isVisible
@@ -36,6 +45,7 @@ const CloudSlider = React.createClass({
               <RCSlider
                 min={0}
                 max={100}
+                tipFormatter={() => {}}
                 value={this.state.maxcc}
                 onChange={this.onUpdate}
                 onAfterChange={this.updateMaxcc}
@@ -51,4 +61,4 @@ CloudSlider.PropTypes = {
     onExpand: React.PropTypes.func,
 }
 
-export default connect(store => store)(onClickOutside(CloudSlider));
+export default connect(store => store)(CloudSlider);

@@ -39,6 +39,13 @@ class SearchBox extends React.Component {
     if(searchBox ===null) return
 
     if(viewport > 700 && viewport < 811 && toolsVisible) {
+      // f(x)   = k*x + n
+      // f(700) = k*700 + n = 40
+      // f(810) = k*810 + n = 130
+      // wolframalpha to the rescue :)
+      // https://www.wolframalpha.com/input/?i=k*700+%2B+n%3D+40,+k*810+%2B+n+%3D+130
+      // as of 23.03.2017
+      // k = 9/11, n = -5860/11
       let newWidth = (9/11)*viewport + (-5860/11)
       newWidth = Math.floor(newWidth)
 

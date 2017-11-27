@@ -8,6 +8,26 @@ export function getMultipliedLayers(layers) {
   return result.join(",");
 }
 
+export function b64DecodeUnicode(str) {
+    if (str.includes("=")) {
+      str = str.replace(/=/g, "") //remove all '='
+    }
+    try {
+      atob(str)
+    }catch(e) {
+      return ''
+    }
+    return decodeURIComponent(atob(str).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+}
+
+export function b64EncodeUnicode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+        return String.fromCharCode('0x' + p1);
+    }));
+  }
+
 export function getPolyfill() {
   if (!Array.prototype.includes) {
     Object.defineProperty(Array.prototype, "includes", {

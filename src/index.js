@@ -5,7 +5,7 @@ import 'font-awesome/css/font-awesome.css'
 import './animate.css';
 import './toast.css';
 
-import 'style!css!sass!./index.scss';
+import './index.scss';
 import { Provider } from 'react-redux'
 import Store from './store'
 
@@ -17,13 +17,3 @@ ReactDOM.render(
     </Provider>,
     rootEl
 )
-
-if (module.hot) {
-    module.hot.accept('./App', () => {
-        const NextApp = require('./App').default
-        ReactDOM.render(
-            <NextApp />,
-            rootEl
-        )
-    })
-}

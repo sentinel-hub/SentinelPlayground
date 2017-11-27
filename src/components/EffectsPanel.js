@@ -4,8 +4,6 @@ import Store from '../store'
 import {connect} from 'react-redux'
 import 'react-toggle/style.css'
 import RCSlider from 'rc-slider'
-import clamp from 'lodash/clamp'
-import {getMultipliedLayers} from '../utils/utils'
 
 class EffectsPanel extends React.Component {
     constructor(props) {
@@ -63,16 +61,16 @@ class EffectsPanel extends React.Component {
     }
 
     render() {
-        const {evalscript, layers, atmFilter, preset, showDates} = Store.current
-        let isEvalScriptFromLayers = evalscript === btoa("return [" + getMultipliedLayers(layers) + "]") || evalscript === ''
+        const {atmFilter, preset, showDates, activeDatasource: {noEffects}} = Store.current
+        let isEvalScriptFromLayers = preset === 'CUSTOM'
         return (
             <div className="effectsPanel">
-                <label>
+                {!noEffects && <label>
                     <Toggle
                         checked={atmFilter !== ''}
                         onChange={this.updateAtmFilter}/>
                     <span>Atmospheric correction</span>
-                </label>
+                </label>}
                 <div />
                 {/*<label>
                     <Toggle

@@ -5,10 +5,11 @@ class WMSImage extends React.Component {
 
   writeToLocalStorage() {
     const img = ReactDOM.findDOMNode(this)
+
     img.addEventListener("load", () => {
       var imgCanvas = document.createElement("canvas"),
-        imgContext = imgCanvas.getContext("2d");
-
+         imgContext = imgCanvas.getContext("2d");
+      
       // Make sure canvas is as big as the picture
       let imgWidth = img.width
       let imgHeight = img.height
@@ -24,7 +25,7 @@ class WMSImage extends React.Component {
   }
 
   componentDidMount() {
-    this.writeToLocalStorage()
+    // this.writeToLocalStorage()
   }
 
   render() {

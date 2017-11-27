@@ -2,7 +2,7 @@ import React, { PropTypes } from "react";
 import { loadLegendJson } from "./../utils/ajax";
 import axios from "axios";
 
-import "style!css!sass!./PlaygroundLegend.scss";
+import "./PlaygroundLegend.scss";
 
 export default class PlaygroundLegend extends React.Component {
   constructor(props) {
@@ -65,7 +65,7 @@ export default class PlaygroundLegend extends React.Component {
         });
 
         return _div;
-      } 
+      } // /"labels"
 
       return html;
     } catch (e) {

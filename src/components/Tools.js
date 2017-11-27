@@ -2,39 +2,37 @@ import React from 'react'
 import SimplePresetsHolder from './SimplePresetsHolder'
 import EffectsPanel from './EffectsPanel'
 import Tabs from 'react-simpletabs'
-import 'style!css!sass!./Tools.scss';
+import './Tools.scss'
 import Store from '../store'
 import logo from '../logo.png'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 let tabPanel, menuPanel
 
 class Tools extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       tabHeight: window.innerHeight
-    };
+    }
   }
 
   handleResize = () => {
-    let viewportWidth = window.innerWidth;
-    let bottomMargin = 37;
-    if(viewportWidth < 701) {
-      bottomMargin = 46;
+    let viewportWidth = window.innerWidth
+    let bottomMargin = 37
+    if (viewportWidth < 701) {
+      bottomMargin = 46
     }
 
-
-
     this.setState({
-      tabHeight: window.innerHeight - (menuPanel.offsetHeight + 45 + this.refs.footer.offsetHeight + bottomMargin),
-    });
+      tabHeight: window.innerHeight - (menuPanel.offsetHeight + 60 + this.refs.footer.offsetHeight)
+    })
     this.props.onResize()
   }
 
   componentDidUpdate() {
     if (tabPanel) {
-      tabPanel.style.maxHeight = this.state.tabHeight + "px"
+      tabPanel.style.maxHeight = this.state.tabHeight + 'px'
     }
   }
 
@@ -48,15 +46,26 @@ class Tools extends React.Component {
   }
 
   generateFooter() {
-    let zoom = Store.current.zoom
-    let min = Store.current.activeBaseLayer.minmax.min
-    let max = Store.current.activeBaseLayer.minmax.max
-    if (zoom < min) {
-      return <div className="notification"><i className="fa fa-warning"></i> Zoom in to view {Store.current.activeBaseLayer.name}</div>
-    } else if (zoom > max) {
-      return <div className="notification"><i className="fa fa-warning"></i> Zoom out to view {Store.current.activeBaseLayer.name}</div>
+    let { activeDatasource: { min, max, name }, zoom, currView } = Store.current
+    if (zoom < min || zoom > max) {
+      return (
+        <div className="notification">
+          <i className="fa fa-warning" /> Zoom {zoom > max ? 'out' : 'in'} to view {name}
+        </div>
+      )
     } else {
-      return <button onClick={this.props.doGenerate} className="btn"><i className="fa fa-print"></i>Generate</button>
+      return (
+        <div>
+          {currView !== Store.current.views.PRESETS && (
+            <a onClick={() => Store.setCurrentView(Store.current.views.PRESETS)} className="btn secondary">
+              <i className="fa fa-arrow-left" />Back to list
+            </a>
+          )}
+          <button onClick={this.props.doGenerate} className="btn">
+            <i className="fa fa-print" />Generate
+          </button>
+        </div>
+      )
     }
   }
 
@@ -66,29 +75,28 @@ class Tools extends React.Component {
   }
 
   render() {
-    return <div id="tools" className={this.props.className}>
-      <header ref="header">
-        <img src={logo} alt="Sentinel Playground" />
-      </header>
-      <Tabs onMount={this.onMount} style={{height: this.state.tabHeight}}>
-        <Tabs.Panel key={1} title={[<i className='fa fa-paint-brush'></i>, "Rendering"]}>
-          <SimplePresetsHolder key={1} toggleLegendModal={this.props.toggleLegendModal}/>
-        </Tabs.Panel>
-        <Tabs.Panel key={2} title={[<i className='fa fa-sliders'></i>, "Effects"]}>
-          <EffectsPanel key={1}/>
-        </Tabs.Panel>
-      </Tabs>
-      <footer ref="footer">
-        {this.generateFooter()}
-      </footer>
-    </div>
-    this.handleResize()
+    return (
+      <div id="tools" className={this.props.className}>
+        <header ref="header">
+          <img src={logo} alt="Sentinel Playground" />
+        </header>
+        <Tabs onMount={this.onMount} style={{ height: this.state.tabHeight }}>
+          <Tabs.Panel key={1} title={[<i className="fa fa-paint-brush" />, 'Rendering']}>
+            <SimplePresetsHolder key={1} toggleLegendModal={this.props.toggleLegendModal} />
+          </Tabs.Panel>
+          <Tabs.Panel key={2} title={[<i className="fa fa-sliders" />, 'Effects']}>
+            <EffectsPanel key={1} />
+          </Tabs.Panel>
+        </Tabs>
+        <footer ref="footer">{this.generateFooter()}</footer>
+      </div>
+    )
   }
 }
 
 Tools.propTypes = {
   onResize: React.PropTypes.func,
   doGenerate: React.PropTypes.func
-};
+}
 
 export default connect(store => store)(Tools)

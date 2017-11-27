@@ -1,5 +1,5 @@
 import React from 'react';
-import 'style!css!sass!./DummyIcon.scss';
+import './DummyIcon.scss';
 
 export default class DummyIcon extends React.Component {
     render() {
