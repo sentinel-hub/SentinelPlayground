@@ -1,3 +1,76 @@
+import Store from '../store';
+import moment from 'moment';
+function getLayersString() {
+  const { preset, presets, showDates } = Store.current;
+  let isDate = showDates ? ',DATE' : '';
+  return (preset === 'CUSTOM' ? presets[0].id : preset) + isDate;
+}
+
+function constructUrl({ url, datasources, instanceID }) {
+  const isPrivate = Store.current.datasources.find(ds => ds.url === url && !ds.private);
+  const newUrl = url.substring(0, url.lastIndexOf('/'));
+  return isPrivate ? `${newUrl}/<YOUR_INSTANCE_ID>` : url;
+}
+export function getMapParameters(isPrivate = false, showMore = false) {
+  const {
+    selectedDate,
+    activeDatasource: { url, urlProcessingApi },
+    dateFormat,
+    preset,
+    evalscripturl,
+    atmFilter,
+    evalscript,
+    isEvalUrl,
+    instanceID,
+    datasources,
+    baseWmsUrl,
+    gain,
+    gamma,
+    maxcc,
+    lat,
+    lng,
+    zoom
+  } = Store.current;
+  const fromDate = moment(selectedDate)
+    .subtract('months', 1)
+    .startOf('month');
+  let date = `${fromDate.format(dateFormat)}/${selectedDate.format(dateFormat)}`;
+  let layersString = getLayersString();
+  const cleanupUrl = isPrivate ? constructUrl({ url, datasources, instanceID }) : url;
+  let paramObj = {
+    url: cleanupUrl,
+    urlProcessingApi: urlProcessingApi,
+    maxcc
+  };
+  if (showMore) {
+    paramObj = {
+      ...paramObj,
+      minZoom: 6,
+      maxZoom: 16,
+      preset,
+      url: cleanupUrl,
+      lat,
+      lng,
+      zoom
+    };
+  }
+  if (preset === 'CUSTOM') {
+    paramObj.evalscript = evalscript;
+    paramObj.evalsource = Store.current.activeDatasource.id;
+    if (evalscripturl !== '' && isEvalUrl) {
+      paramObj.evalscripturl = evalscripturl;
+      paramObj.evalscript = '';
+    }
+    paramObj.PREVIEW = 3;
+  }
+  new Number(gain).toFixed(1) !== '1.0' && (paramObj.gain = gain);
+  new Number(gamma).toFixed(1) !== '1.0' && (paramObj.gamma = gamma);
+  atmFilter && (paramObj.atmFilter = atmFilter);
+  paramObj.layers = layersString;
+  paramObj.time = date;
+  return paramObj;
+}
+
 export function getMultipliedLayers(layers) {
   let result = [];
   for (let layer in layers) {
@@ -5,32 +78,39 @@ export function getMultipliedLayers(layers) {
       result.push(`${layers[layer]}*2.5`);
     }
   }
-  return result.join(",");
+  return result.join(',');
 }
 
 export function b64DecodeUnicode(str) {
-    if (str.includes("=")) {
-      str = str.replace(/=/g, "") //remove all '='
-    }
-    try {
-      atob(str)
-    }catch(e) {
-      return ''
-    }
-    return decodeURIComponent(atob(str).split('').map(function(c) {
+  if (str.includes('=')) {
+    str = str.replace(/=/g, ''); //remove all '='
+  }
+  try {
+    atob(str);
+  } catch (e) {
+    return '';
+  }
+  return decodeURIComponent(
+    atob(str)
+      .split('')
+      .map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+      })
+      .join('')
+  );
 }
 
 export function b64EncodeUnicode(str) {
-    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-        return String.fromCharCode('0x' + p1);
-    }));
-  }
+  return btoa(
+    encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+      return String.fromCharCode('0x' + p1);
+    })
+  );
+}
 
 export function getPolyfill() {
   if (!Array.prototype.includes) {
-    Object.defineProperty(Array.prototype, "includes", {
+    Object.defineProperty(Array.prototype, 'includes', {
       value: function(searchElement, fromIndex) {
         // 1. Let O be ? ToObject(this value).
         if (this == null) {
@@ -59,11 +139,9 @@ export function getPolyfill() {
         var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
 
         function sameValueZero(x, y) {
-          return x === y ||
-            (typeof x === "number" &&
-              typeof y === "number" &&
-              isNaN(x) &&
-              isNaN(y));
+          return (
+            x === y || (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y))
+          );
         }
 
         // 7. Repeat, while k < len
@@ -88,7 +166,7 @@ export function getPolyfill() {
       var T, A, k;
 
       if (this == null) {
-        throw new TypeError("this is null or not defined");
+        throw new TypeError('this is null or not defined');
       }
 
       // 1. Let O be the result of calling ToObject passing the |this|
@@ -102,8 +180,8 @@ export function getPolyfill() {
 
       // 4. If IsCallable(callback) is false, throw a TypeError exception.
       // See: http://es5.github.com/#x9.11
-      if (typeof callback !== "function") {
-        throw new TypeError(callback + " is not a function");
+      if (typeof callback !== 'function') {
+        throw new TypeError(callback + ' is not a function');
       }
 
       // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
@@ -146,8 +224,8 @@ export function getPolyfill() {
 
   if (!String.prototype.includes) {
     String.prototype.includes = function(search, start) {
-      "use strict";
-      if (typeof start !== "number") {
+      'use strict';
+      if (typeof start !== 'number') {
         start = 0;
       }
 

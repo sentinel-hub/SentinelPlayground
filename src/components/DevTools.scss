@@ -1,0 +1,67 @@
+@import '../variables.scss';
+
+.DevTools {
+    cursor: pointer;
+    margin-right: $basicMargin + $controlsHeight + 4;
+
+    &:hover {
+        /*cursor: help;*/
+    }
+}
+
+@media screen and (max-width: 1050px) {
+    #Controls .DevTools {
+        margin-right: $basicMargin;
+    }
+
+    #Controls.hidden .DevTools {
+        margin-right: $basicMargin + $controlsHeight + 4;
+    }
+
+    #Controls .dev-tools-clear-1050 {
+        clear: both;
+    }
+
+    #Controls.hidden .dev-tools-clear-1050 {
+        clear: none;
+    }
+}
+
+@media screen and (max-width: 720px) {
+    #Controls.hidden .DevTools {
+        margin-right: $basicMargin;
+    }
+
+    #Controls.hidden .dev-tools-clear-1050 {
+        clear: both;
+    }
+}
+
+/* Dev Button visibility and grid */
+#Controls .DevTools.leftOne {
+    display: block !important;
+}
+
+#Controls .DevTools.rightOne {
+    display: none !important;
+}
+
+@media screen and (max-width: 700px) {
+  .floatItem {
+      top: 0;
+  }
+
+  #Controls .DevTools.leftOne {
+      display: none !important;
+  }
+
+  #Controls .DevTools.rightOne {
+      display: block !important;
+      margin-right: 0;
+      margin-top: $basicMargin;
+  }
+
+  .DevTools.floatItem i.fa:hover { 
+      /*cursor: help;*/
+  }
+}

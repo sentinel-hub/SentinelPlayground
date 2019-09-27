@@ -1,14 +1,17 @@
-import config from './config'
-import _ from 'lodash'
-import URI from 'urijs'
-import { calcBboxFromXY } from '../utils/coords'
-import { combineEpics, createEpicMiddleware } from 'redux-observable'
-import { createStore, applyMiddleware, compose } from 'redux'
-import { getMultipliedLayers } from '../utils/utils'
-import moment from 'moment'
+import config from './config';
+import _ from 'lodash';
+
+import { SentinelHubWms } from 'sentinelhub-js';
+
+import URI from 'urijs';
+import { calcBboxFromXY } from '../utils/coords';
+import { combineEpics, createEpicMiddleware } from 'redux-observable';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { getMultipliedLayers } from '../utils/utils';
+import moment from 'moment';
 
 // eslint-disable-next-line
-import rxjs from 'rxjs'
+import rxjs from 'rxjs';
 
 const SET_MAXCC = 'SET_MAXCC',
   SET_DATE = 'SET_DATE',
@@ -54,31 +57,45 @@ const SET_MAXCC = 'SET_MAXCC',
   SET_LEGEND_Y = 'SET_LEGEND_Y',
   SET_LEGEND_HEIGHT = 'SET_LEGEND_HEIGHT',
   SET_LEGEND_WIDTH = 'SET_LEGEND_WIDTH',
-  SET_LEGEND_OBJ = 'SET_LEGEND_OBJ'
+  SET_LEGEND_OBJ = 'SET_LEGEND_OBJ',
+  SET_RECAPTCHA_AUTH_TOKEN = 'SET_RECAPTCHA_AUTH_TOKEN';
 
 const Reducers = {
   SET_MAXCC: maxcc => ({ maxcc }),
   SET_DATE: selectedDate => {
-    return { selectedDate }
+    return { selectedDate };
   },
-  SET_PRESET: preset => ({ preset, currView: preset === 'CUSTOM' ? '2' : '1' }), //in config VIEWS for Bands
+  SET_PRESET: preset => {
+    const isCustom = preset === 'CUSTOM';
+    return { preset, currView: isCustom ? '2' : '1' };
+  }, //in config VIEWS for Bands
   SET_DATASOURCE: setDatasource,
   SET_PRESETS: presets => ({ presets }),
   SET_PRESETS_LEGEND: setPresetsLegend,
   SET_CURR_VIEW: currView => ({ currView }),
   SET_MAP_BOUNDS: mapBounds => ({ mapBounds }),
-  SET_AVAILABLE_DAYS: availableDays => ({ availableDays }),
+  SET_AVAILABLE_DAYS: availableDates => ({ availableDates }),
   SET_DATES_CC_MAP: datesCcMap => ({ datesCcMap }),
   SET_ON_DAY_PICKED: onDayPicked => ({ onDayPicked }),
   SET_PREV_DATE: prevDate => ({ prevDate }),
   SET_NEXT_DATE: nextDate => ({ nextDate }),
   SET_EVAL_SCRIPT: evalscript => ({ evalscript }),
   SET_RENDERED_EVALSCRIPT: renderedEvalscript => ({ renderedEvalscript }),
-  SET_CHANNELS: channels => ({ channels }),
+  SET_CHANNELS: function(channels, presets) {
+    const [r, g, b] = channels;
+    const defaultPreset = this.preset || presets[0].id;
+    return {
+      channels,
+      presets,
+      preset: defaultPreset,
+      // if only one channel present, use that only for all 3 bands
+      layers:
+        b !== undefined ? { r: r.name, g: g.name, b: b.name } : { r: r.name, g: r.name, b: r.name }
+    };
+  },
   SET_START_LOC: startLocation => ({ startLocation }),
   SET_LAYERS: layers => ({ layers }),
   SET_ATMFILTER: atmFilter => ({ atmFilter }),
-  SET_CLOCOR: cloudCorrection => ({ cloudCorrection }),
   SET_GAIN: gain => ({ gain }),
   SET_GAMMA: gamma => ({ gamma }),
   SET_SHOW_DATES: showDates => ({ showDates }),
@@ -98,14 +115,17 @@ const Reducers = {
   SET_SELECTED_MAP_LIBRARY: selectedMapLibrary => ({ selectedMapLibrary }),
   SET_DEV_MODAL_VISIBILITY: devModalVisible => ({ devModalVisible }),
   SET_GOOGLE_MAPS_API_KEY: googleMapsApiKey => ({ googleMapsApiKey }),
-  SET_TEMP_GOOGLE_MAPS_API_KEY: tempGoogleMapsApiKey => ({ tempGoogleMapsApiKey }),
+  SET_TEMP_GOOGLE_MAPS_API_KEY: tempGoogleMapsApiKey => ({
+    tempGoogleMapsApiKey
+  }),
   SET_SELECTED_DEV_TOOLS_TAB: selectedDevToolsTab => ({ selectedDevToolsTab }),
   SET_LEGEND_X: legendX => ({ legendX }),
   SET_LEGEND_Y: legendY => ({ legendY }),
   SET_LEGEND_HEIGHT: legendHeight => ({ legendHeight }),
   SET_LEGEND_WIDTH: legendWidth => ({ legendWidth }),
-  SET_LEGEND_OBJ: legendObj => ({ legendObj })
-}
+  SET_LEGEND_OBJ: legendObj => ({ legendObj }),
+  SET_RECAPTCHA_AUTH_TOKEN: recaptchaAuthToken => ({ recaptchaAuthToken }),
+};
 
 const DoesNeedRefresh = [
   SET_MAXCC,
@@ -117,7 +137,7 @@ const DoesNeedRefresh = [
   SET_GAIN,
   SET_GAMMA,
   SET_DATASOURCE
-]
+];
 const DoRefreshUrl = [
   SET_DATASOURCE,
   SET_LAT,
@@ -135,7 +155,7 @@ const DoRefreshUrl = [
   SET_GAMMA,
   SET_DEV_MODE,
   SET_EVAL_MODE
-]
+];
 
 function updatePath() {
   const {
@@ -146,7 +166,7 @@ function updatePath() {
     baseWmsUrl,
     instanceID,
     datasources,
-    activeDatasource: { id, minDate, url },
+    activeDatasource: { id, url },
     lat,
     lng,
     preset,
@@ -157,50 +177,70 @@ function updatePath() {
     evalscripturl,
     atmFilter,
     showDates
-  } = this
-  const pLayers = _.values(layers).join(',')
-  const pTime = `${minDate}%7C${moment(selectedDate).format(dateFormat)}`
-  const es = encodeURIComponent(evalscript)
-  const evalScriptParam = evalscript !== btoa('return [' + getMultipliedLayers(pLayers) + ']') ? `evalscript=${es}` : ''
-  const params = []
-  const currentDS = datasources.find(ds => ds.url && ds.url === url)
+  } = this;
+  const pLayers = Object.keys(layers)
+    .map(k => layers[k])
+    .join(',');
+  const fromDate = moment(this.selectedDate)
+    .subtract('months', 6)
+    .startOf('month');
+  const pTime = `${fromDate.format(dateFormat)}%7C${moment(selectedDate).format(dateFormat)}`;
+  const es = encodeURIComponent(evalscript);
+  const evalScriptParam =
+    evalscript !== btoa('return [' + getMultipliedLayers(pLayers) + ']') ? `evalscript=${es}` : '';
+  const params = [];
+  const currentDS = datasources.find(ds => ds.url && ds.url === url);
   if (instanceID && currentDS.private) {
-    params.push(`baseWmsUrl=${baseWmsUrl}`)
-    params.push(`instanceID=${instanceID}`)
+    params.push(`baseWmsUrl=${baseWmsUrl}`);
+    params.push(`instanceID=${instanceID}`);
   }
-  params.push(`source=${id}`)
-  params.push(`lat=${lat}`)
-  params.push(`lng=${lng}`)
-  params.push(`zoom=${zoom}`)
-  params.push(`preset=${preset}`)
-  params.push(`layers=${pLayers}`)
-  params.push(`maxcc=${maxcc}`)
-  params.push(`gain=${gain}`)
-  params.push(`gamma=${gamma}`)
-  params.push(`time=${pTime}`)
-  params.push(`atmFilter=${atmFilter}`)
-  params.push(`showDates=${showDates}`)
+  params.push(`source=${id}`);
+  params.push(`lat=${lat}`);
+  params.push(`lng=${lng}`);
+  params.push(`zoom=${zoom}`);
+  params.push(`preset=${preset}`);
+  params.push(`layers=${pLayers}`);
+  params.push(`maxcc=${maxcc}`);
+  params.push(`gain=${gain}`);
+  params.push(`gamma=${gamma}`);
+  params.push(`time=${pTime}`);
+  params.push(`atmFilter=${atmFilter}`);
+  params.push(`showDates=${showDates}`);
   if (preset === 'CUSTOM') {
-    evalScriptParam.length !== '' && params.push(`${evalScriptParam}`)
-    evalscripturl !== '' && params.push(`evalscripturl=${evalscripturl}`)
+    evalScriptParam.length !== '' && params.push(`${evalScriptParam}`);
+    evalscripturl !== '' && params.push(`evalscripturl=${evalscripturl}`);
   }
 
-  const path = params.join('&')
+  const path = params.join('&');
   if (window.history.pushState) {
-    var newurl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + path
-    window.history.pushState({ path: newurl }, '', newurl)
+    var newurl =
+      window.location.protocol +
+      '//' +
+      window.location.host +
+      window.location.pathname +
+      '?' +
+      path;
+    window.history.pushState({ path: newurl }, '', newurl);
   } else {
-    window.location.hash = path
+    window.location.hash = path;
   }
 
-  return { path }
+  return { path };
 }
 
 function setDatasource(ds) {
-  const { selectedDate: currDate } = this
-  const { minDate, maxDate = moment() } = ds
-  const selectedDate = (moment(currDate).isBefore(minDate) || moment(currDate).isAfter(maxDate)) ? moment(maxDate) : currDate
-  return { activeDatasource: ds, selectedDate, minDate, maxDate: moment(maxDate) }
+  const { selectedDate: currDate } = this;
+  const { minDate, maxDate = moment() } = ds;
+  const selectedDate =
+    moment(currDate).isBefore(minDate) || moment(currDate).isAfter(maxDate)
+      ? moment(maxDate)
+      : currDate;
+  return {
+    activeDatasource: ds,
+    selectedDate,
+    minDate,
+    maxDate: moment(maxDate)
+  };
 }
 
 function setActiveBaseLayer(name, minmax) {
@@ -209,45 +249,56 @@ function setActiveBaseLayer(name, minmax) {
       name: name,
       minmax: { min: minmax.min, max: minmax.max }
     }
-  }
+  };
 }
 
 function generateWmsUrl() {
-  const {isEvalUrl, evalscripturl} = this
-  const { url: dsUrl, name, id, minDate } = this.activeDatasource
-  const url = new URI(`${dsUrl}?SERVICE=WMS&REQUEST=GetMap`)
-  const dateLayer = this.showDates ? ',DATE' : ''
-  url.addQuery('MAXCC', this.maxcc)
-  url.addQuery('LAYERS', (this.preset === 'CUSTOM' ? Object.keys(this.presets)[1] : this.preset) + dateLayer)
-  new Number(this.gain).toFixed(1) !== '1.0' && url.addQuery('GAIN', this.gain)
-  new Number(this.gamma).toFixed(1) !== '1.0' && url.addQuery('GAMMA', this.gamma)
-  url.addQuery('CLOUDCORRECTION', this.cloudCorrection)
-  url.addQuery('EVALSOURCE', id || 'S2')
-  url.addQuery('WIDTH', this.size[0] - 80)
-  url.addQuery('HEIGHT', this.size[1] - 100)
-  this.atmFilter && url.addQuery('ATMFILTER', this.atmFilter)
-  url.addQuery('FORMAT', 'image/jpeg')
-  url.addQuery('NICENAME', `${name} image on ${this.selectedDate.format(this.dateFormat)}.jpg`)
-  url.addQuery('TIME', `${minDate}/${this.selectedDate.format(this.dateFormat)}`)
-  url.addQuery('BBOX', calcBboxFromXY([this.lat, this.lng], this.zoom).join(','))
+  const { isEvalUrl, evalscripturl } = this;
+  const { url: dsUrl, name, id, datasourceID } = this.activeDatasource;
+  const fromDate = moment(this.selectedDate)
+    .subtract('month', 6)
+    .startOf('month');
+  const dateLayer = this.showDates ? ',DATE' : '';
+
+  let params = {
+    maxcc: this.maxcc,
+    layers: (this.preset === 'CUSTOM' ? this.presets[1].id : this.preset) + dateLayer,
+    evalsource: id || 'S2',
+    width: this.size[0] - 80,
+    height: this.size[1] - 100,
+    format: 'image/jpeg',
+    nicename: `${name} image on ${this.selectedDate.format(this.dateFormat)}.jpg`,
+    bbox: calcBboxFromXY([this.lat, this.lng], this.zoom).join(','),
+    time: `${fromDate.format(this.dateFormat)}/${this.selectedDate.format(this.dateFormat)}`,
+    showlogo: true,
+    bgcolor: '000000'
+  };
+
+  if (Number(this.gain).toFixed(1) !== '1.0') {
+    params.gain = this.gain;
+  }
+  if (Number(this.gamma).toFixed(1) !== '1.0') {
+    params.gamma = this.gamma;
+  }
+  if (this.atmFilter) {
+    params.atmfilter = this.atmFilter;
+  }
   if (this.preset === 'CUSTOM') {
-    url.addQuery('PREVIEW', 3)
-    url.addQuery('EVALSCRIPT', this.evalscript)
+    params.preview = 3;
+    params.evalscript = this.evalscript;
     if (isEvalUrl && evalscripturl !== '') {
-      url.addQuery('EVALSCRIPTURL', evalscripturl)
-      URI.removeQuery(url, 'EVALSCRIPT')
-    } 
+      params.evalscripturl = evalscripturl;
+      delete params.evalscript;
+    }
   }
 
-  const browserUrl = url
-    .toString()
-    .replace(/\%2f/gi, '/')
-    .replace(/\%2c/gi, ',')
-  return { imgWmsUrl: browserUrl }
+  const getMapUrl = new SentinelHubWms(dsUrl, datasourceID).getMapUrl(params);
+
+  return { imgWmsUrl: getMapUrl };
 }
 
 function setPresetsLegend(value) {
-  return { presetsLegend: value }
+  return { presetsLegend: value };
 }
 
 function mustRefresh(actions) {
@@ -256,19 +307,21 @@ function mustRefresh(actions) {
   return actions
     .filter(action => DoesNeedRefresh.includes(action.type))
     .debounceTime(600)
-    .mapTo({ type: REFRESH, args: [] })
+    .mapTo({ type: REFRESH, args: [] });
 }
 function refreshPath(actions) {
   return actions
     .filter(action => DoRefreshUrl.includes(action.type))
     .debounceTime(1000)
-    .mapTo({ type: SET_PATH, args: [] })
+    .mapTo({ type: SET_PATH, args: [] });
 }
 
 function reducer(currentState, action) {
   return action.args
-    ? Object.assign({}, currentState, Reducers[action.type].call(currentState, ...action.args), { action })
-    : currentState
+    ? Object.assign({}, currentState, Reducers[action.type].call(currentState, ...action.args), {
+        action
+      })
+    : currentState;
 }
 
 const store = createStore(
@@ -278,22 +331,22 @@ const store = createStore(
     applyMiddleware(createEpicMiddleware(combineEpics(mustRefresh, refreshPath))),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
-)
+);
 
 if (window.devToolsExtension) {
-  window.devToolsExtension.updateStore(store)
+  window.devToolsExtension.updateStore(store);
 }
 
 function action(x) {
-  return (...args) => store.dispatch({ type: x, args })
+  return (...args) => store.dispatch({ type: x, args });
 }
 
 export default {
   get current() {
-    return store.getState()
+    return store.getState();
   },
   get Store() {
-    return store
+    return store;
   },
   setMaxcc: action(SET_MAXCC),
   setDate: action(SET_DATE),
@@ -315,7 +368,6 @@ export default {
   setStartLocation: action(SET_START_LOC),
   setMapBounds: action(SET_MAP_BOUNDS),
   setAtmFilter: action(SET_ATMFILTER),
-  setCloudCorrection: action(SET_CLOCOR),
   setDatasource: action(SET_DATASOURCE),
   setGain: action(SET_GAIN),
   setGamma: action(SET_GAMMA),
@@ -339,5 +391,6 @@ export default {
   setLEgendHeight: action(SET_LEGEND_HEIGHT),
   setLegendWidth: action(SET_LEGEND_WIDTH),
   setEvalMode: action(SET_EVAL_MODE),
-  setLegendObj: action(SET_LEGEND_OBJ)
-}
+  setLegendObj: action(SET_LEGEND_OBJ),
+  setRecaptchaAuthToken: action(SET_RECAPTCHA_AUTH_TOKEN),
+};

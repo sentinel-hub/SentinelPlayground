@@ -1,10 +1,11 @@
-import React, { Component } from 'react'
-import Store from '../store'
-import { connect } from 'react-redux'
-import satellite from './satellite.png'
-import styled from 'styled-components'
-import { loadGetCapabilities } from '../utils/ajax'
-import onClickOutside from 'react-onclickoutside'
+import React, { Component } from 'react';
+import Store from '../store';
+import { connect } from 'react-redux';
+import satellite from './satellite.png';
+import styled from 'styled-components';
+import { loadGetCapabilities } from '../utils/ajax';
+import { getClosestNextDate, queryDates } from '../utils/datesHelper';
+import onClickOutside from 'react-onclickoutside';
 
 const Style = styled.div`
   position: absolute;
@@ -80,49 +81,55 @@ const Style = styled.div`
       }
     }
   }
-`
+`;
 class DatasourceSwitch extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       show: false,
       showLayer: true,
       loading: false,
       sources: Store.current.datasources.filter(ds => ds.url)
-    }
-    this.handleClickOutside = this.handleClickOutside.bind(this)
+    };
+    this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
-  hideModal = () => this.setState({error: null})
+  hideModal = () => this.setState({ error: null });
 
   switchDS = ds => {
-    const { showLayer, loading } = this.state
-    const { activeDatasource: { name } } = Store.current
+    const { showLayer, loading } = this.state;
+    const { activeDatasource: { name } } = Store.current;
     if (ds.name === name) {
       this.setState({ showLayer: !showLayer, error: null }, () => {
-        this.props.onToggle && this.props.onToggle(showLayer)
-      })
+        this.props.onToggle && this.props.onToggle(showLayer);
+      });
     } else {
-      if (loading) return
-      this.setState({ showLayer: true, loading: true, error: null })
+      if (loading) return;
+      this.setState({ showLayer: true, loading: true, error: null });
+
       loadGetCapabilities(ds)
         .then(() => {
-          this.setState({ show: false, loading: false })
+          this.setState({ show: false, loading: false });
+          queryDates().then(res => {
+            Store.setAvailableDates(res);
+            Store.setPrevDate(getClosestNextDate(true));
+            Store.setNextDate(getClosestNextDate(false));
+          });
         })
         .catch(e => {
-          this.props.onError(`Could not load data for ${ds.name}. Please try again later.`)
-          this.setState({ loading: false})
-        })
+          this.props.onError(`Could not load data for ${ds.name}. Please try again later.`);
+          this.setState({ loading: false });
+        });
     }
-  }
+  };
 
   handleClickOutside() {
-    this.setState({ show: false })
+    this.setState({ show: false });
   }
 
   render() {
-    const { activeDatasource: { name } } = Store.current
-    const { sources, show, showLayer, loading } = this.state
+    const { activeDatasource: { name } } = Store.current;
+    const { sources, show, showLayer, loading } = this.state;
     return (
       <Style>
         <a onClick={() => this.setState({ show: !show })}>
@@ -130,26 +137,21 @@ class DatasourceSwitch extends Component {
         </a>
         {show && (
           <div className={loading && 'loading'}>
-            <h3>
-              Datasets{' '}
-              {loading && (
-                <i className="fa fa-spinner fa-spin" />
-              )}
-            </h3>
+            <h3>Datasets {loading && <i className="fa fa-spinner fa-spin" />}</h3>
             {sources.map((ds, i) => {
-              const active = ds.name === name
+              const active = ds.name === name;
               return (
                 <a key={i} className={active && 'active'} onClick={() => this.switchDS(ds)}>
                   <i className={`fa fa-${showLayer && active ? 'check-square' : 'square-o'}`} />
                   {ds.name}
                 </a>
-              )
+              );
             })}
           </div>
         )}
       </Style>
-    )
+    );
   }
 }
 
-export default connect(store => store)(onClickOutside(DatasourceSwitch))
+export default connect(store => store)(onClickOutside(DatasourceSwitch));

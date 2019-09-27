@@ -1,9 +1,14 @@
-import React from "react";
-import { connect } from "react-redux";
-import { map, isEmpty, isEqual } from "lodash";
-import Store from "../store";
-import AdvancedHolder from "./advanced/AdvancedHolder";
-import WMSImage from "./WMSImage";
+import React from 'react';
+import { connect } from 'react-redux';
+import Store from '../store';
+import AdvancedHolder from './advanced/AdvancedHolder';
+import WMSImage from './WMSImage';
+
+const customPreset = {
+  name: 'Custom',
+  id: 'CUSTOM',
+  desc: 'Create custom rendering'
+};
 
 class SimplePresetsHolder extends React.Component {
   constructor(props) {
@@ -13,10 +18,10 @@ class SimplePresetsHolder extends React.Component {
     };
   }
   activatePreset(preset) {
-    if (Store.current.preset === preset && preset !== 'CUSTOM') return;
-    Store.setPreset(preset);
-    const { preset: sPreset, presets } = Store.current;
-    if (!presets[sPreset].legendUrl) {
+    const { id, legendUrl } = preset;
+    if (Store.current.preset === id && id !== 'CUSTOM') return;
+    Store.setPreset(id);
+    if (!legendUrl) {
       Store.setLegendVisiblity(false); // legend not available
     }
 
@@ -29,15 +34,13 @@ class SimplePresetsHolder extends React.Component {
 
   updateCurrentView() {
     Store.setCurrentView(
-      Store.current.preset === "CUSTOM"
-        ? Store.current.views.BANDS
-        : Store.current.views.PRESETS
+      Store.current.preset === 'CUSTOM' ? Store.current.views.BANDS : Store.current.views.PRESETS
     );
   }
 
   getBase64Urls() {
     try {
-      const base64Urls = localStorage.getItem("base64Urls");
+      const base64Urls = localStorage.getItem('base64Urls');
       if (base64Urls === null) {
         return;
       }
@@ -49,8 +52,8 @@ class SimplePresetsHolder extends React.Component {
   saveBase64(presetName, base64) {
     let ua = navigator.userAgent.toLowerCase();
     let isSafari = false;
-    if (ua.indexOf("safari") != -1) {
-      if (ua.indexOf("chrome") > -1) {
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
       } else {
         isSafari = true;
         return;
@@ -62,7 +65,7 @@ class SimplePresetsHolder extends React.Component {
     obj[presetName] = base64;
     this.setState({ base64Urls: obj });
     try {
-      localStorage.setItem("base64Urls", JSON.stringify(this.state.base64Urls));
+      localStorage.setItem('base64Urls', JSON.stringify(this.state.base64Urls));
     } catch (e) {
       //writing unsuccessful
     }
@@ -77,55 +80,54 @@ class SimplePresetsHolder extends React.Component {
   };
 
   getSimpleHolder() {
-    const {
-      legendObj,
-      channels,
-      legendVisible,
-      presets,
-      preset: storePreset
-    } = Store.current;
+    const { legendObj, channels, legendVisible, presets, preset: storePreset } = Store.current;
+    const actualPresets = channels.length > 0 ? [customPreset, ...presets] : presets;
     return (
       <div className="simplePresetsHolder">
-        {map(presets, (preset, key) => {
-          const presetHasLegend = preset.legendUrl,
-                isActive = preset.legendUrl === legendObj && legendVisible,
-                noChannels = channels.length === 0 && key === "CUSTOM";
+        {actualPresets.map((preset, i) => {
+          const { name, description, image, legendUrl, id } = preset;
+          const isActive = legendUrl === legendObj && legendVisible,
+            isCustom = id === 'CUSTOM',
+            hasChannels = channels.length > 0 && isCustom,
+            draw = !isCustom || (isCustom && hasChannels);
 
           return (
-            <a
-              style={{
-                display: noChannels ? "none" : "block",
-                position: "relative",
-                paddingRight: "50px"
-              }}
-              key={key}
-              onClick={() => {
-                this.activatePreset(key);
-              }}
-              className={storePreset === key ? "active" : ""}
-            >
-              {key === "CUSTOM"
-                ? <i className="icon fa fa-paint-brush" />
-                : <WMSImage
+            draw && (
+              <a
+                style={{
+                  position: 'relative',
+                  paddingRight: '50px'
+                }}
+                key={id}
+                onClick={() => {
+                  this.activatePreset(preset);
+                }}
+                className={storePreset === id ? 'active' : ''}
+              >
+                {isCustom ? (
+                  <i className="icon fa fa-paint-brush" />
+                ) : (
+                  <WMSImage
                     // onBase64Gen={b => this.saveBase64(key, b)}
-                    alt={preset.name}
-                    src={
-                      preset.image
-                    }
+                    alt={name}
+                    src={image}
                     localStorageProp="test"
-                  />}
-              {preset.name}
-              <small>{preset.desc}</small>
-              {presetHasLegend &&
-                <div className={`legendIcon ${isActive && "active"}`}>
-                  <i
-                    className="fa fa-list-ul"
-                    title="Open a legend"
-                    value={preset.legendUrl || ""}
-                    onClick={e => this.handleLegendClick(e, preset.legendUrl)}
                   />
-                </div>}
-            </a>
+                )}
+                {name}
+                <small>{description}</small>
+                {legendUrl && (
+                  <div className={`legendIcon ${isActive && 'active'}`}>
+                    <i
+                      className="fa fa-list-ul"
+                      title="Open a legend"
+                      value={legendUrl || ''}
+                      onClick={e => this.handleLegendClick(e, preset.legendUrl)}
+                    />
+                  </div>
+                )}
+              </a>
+            )
           );
         })}
       </div>
@@ -136,11 +138,10 @@ class SimplePresetsHolder extends React.Component {
     let isBasic = Store.current.currView === Store.current.views.PRESETS;
     return (
       <div>
-        <div style={{ display: isBasic ? "block" : "none" }}>
-          {this.getSimpleHolder()}
-        </div>
-        {Store.current.channels.length > 0 &&
-          <AdvancedHolder style={{ display: !isBasic ? "block" : "none" }} />}
+        <div style={{ display: isBasic ? 'block' : 'none' }}>{this.getSimpleHolder()}</div>
+        {Store.current.channels.length > 0 && (
+          <AdvancedHolder style={{ display: !isBasic ? 'block' : 'none' }} />
+        )}
       </div>
     );
   }

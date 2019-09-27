@@ -1,7 +1,9 @@
 @import 'variables.scss';
-@import 'geosuggest.scss';
+@import 'SearchBox.scss';
 
-html, body, #root {
+html,
+body,
+#root {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -9,7 +11,7 @@ html, body, #root {
 }
 
 a {
-  color: $primaryCol
+  color: $primaryCol;
 }
 #nprogress .bar {
   background: $primaryCol;
@@ -62,13 +64,14 @@ a {
     transition: all ease 0.4s;
   }
   &.secondary {
-   /*background: $mainMedium;*/
+    /*background: $mainMedium;*/
     font-size: 12px;
     float: left;
     background: none;
     text-transform: none;
   }
-  &[disabled], &[disabled]:hover {
+  &[disabled],
+  &[disabled]:hover {
     color: #666;
     background: #eee;
     cursor: default;
@@ -76,7 +79,7 @@ a {
 }
 
 .toast-success {
-  background: $primaryCol
+  background: $primaryCol;
 }
 .notification {
   margin: 10px auto;
@@ -102,7 +105,8 @@ a {
   z-index: 300;
 }
 .leaflet-grab.isEditing {
-  cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYxIDY0LjE0MDk0OSwgMjAxMC8xMi8wNy0xMDo1NzowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpENzlDNDFEQkNFNjdERjExOTQyNEVGQjJERkVDQTQxRCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo5RDY0NEVCMzNEMkYxMUUyOENEOEYzMjdDNjQzQjNCMiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo5RDY0NEVCMjNEMkYxMUUyOENEOEYzMjdDNjQzQjNCMiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1LjEgV2luZG93cyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkY5QjE2MkY1MkMzREUyMTE5NjFGQUM0MTc4ODg5QTcwIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkQ3OUM0MURCQ0U2N0RGMTE5NDI0RUZCMkRGRUNBNDFEIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+PJgYVAAAAZZJREFUeNqck99LwlAUx8+G9JcIKtJTJArKTCE0JUh68p/wqQdBQkJQ/O0/EQhBMKRJKwe9aJkI6UvQv3J3O2dsl9UmSQc+fHfP7vly7t0ZcM5hNBpx0v8QAAzGmGVSqVQk2BH5STyHco0cISvkRisupjK9NE0TotEoDIdD7ld8psYLkgkakkAObNUwn5GdDtLptGUyGAw8JibjTYQUHs4X4DwjbdEBoSiKrwluDFHB9OLVWpPaBkHRgUMqlYJIJAL9fl+YyAw+EciNY9aalNbIlzBwuiAck16vx+0Oak7bp7fH7iNUfxzBTTKZhHA4DN1ulz+WlypuLiFzu5A0j3k94O6AwjAM2G63IMuyhSRJ0Ol0+NPVO33i+98XHHA6IJPZbGYV1+t1zzxMst45KD4vpsJA13XYbDbQaDQ8xWomXiAPVyqBaJjPCoP1eg2tVst3Ehnw5o4BbQsDPOfOMWach0gvjTeRuzuxPmlQoh/irxgrsQ+UQ59XKxn2COyghoAP1b0Myi9LFe+hhMwRsDWPef1bgAEAeHxVPb0u7pAAAAAASUVORK5CYII='), auto
+  cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYxIDY0LjE0MDk0OSwgMjAxMC8xMi8wNy0xMDo1NzowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpENzlDNDFEQkNFNjdERjExOTQyNEVGQjJERkVDQTQxRCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo5RDY0NEVCMzNEMkYxMUUyOENEOEYzMjdDNjQzQjNCMiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo5RDY0NEVCMjNEMkYxMUUyOENEOEYzMjdDNjQzQjNCMiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1LjEgV2luZG93cyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkY5QjE2MkY1MkMzREUyMTE5NjFGQUM0MTc4ODg5QTcwIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkQ3OUM0MURCQ0U2N0RGMTE5NDI0RUZCMkRGRUNBNDFEIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+PJgYVAAAAZZJREFUeNqck99LwlAUx8+G9JcIKtJTJArKTCE0JUh68p/wqQdBQkJQ/O0/EQhBMKRJKwe9aJkI6UvQv3J3O2dsl9UmSQc+fHfP7vly7t0ZcM5hNBpx0v8QAAzGmGVSqVQk2BH5STyHco0cISvkRisupjK9NE0TotEoDIdD7ld8psYLkgkakkAObNUwn5GdDtLptGUyGAw8JibjTYQUHs4X4DwjbdEBoSiKrwluDFHB9OLVWpPaBkHRgUMqlYJIJAL9fl+YyAw+EciNY9aalNbIlzBwuiAck16vx+0Oak7bp7fH7iNUfxzBTTKZhHA4DN1ulz+WlypuLiFzu5A0j3k94O6AwjAM2G63IMuyhSRJ0Ol0+NPVO33i+98XHHA6IJPZbGYV1+t1zzxMst45KD4vpsJA13XYbDbQaDQ8xWomXiAPVyqBaJjPCoP1eg2tVst3Ehnw5o4BbQsDPOfOMWach0gvjTeRuzuxPmlQoh/irxgrsQ+UQ59XKxn2COyghoAP1b0Myi9LFe+hhMwRsDWPef1bgAEAeHxVPb0u7pAAAAAASUVORK5CYII='),
+    auto;
 }
 
 .rodal {
@@ -124,16 +128,16 @@ div.socialLogin {
   left: auto;
 }
 
-
 .leaflet-container .leaflet-control-attribution {
   background: $mainMedium;
-  color: rgba(255,255,255,.6);
+  color: rgba(255, 255, 255, 0.6);
 
   a {
     color: $primaryCol;
   }
 }
-.leaflet-control-layers, .leaflet-bar {
+.leaflet-control-layers,
+.leaflet-bar {
   border: none !important;
   background: $mainMedium;
   color: #fff;
@@ -149,82 +153,82 @@ div.socialLogin {
   height: 40px !important;
   /*box-shadow: 0 2px 5px #000;*/
   overflow: visible;
-  }
-.leaflet-control-layers{
+}
+.leaflet-control-layers {
   background: #487191;
 }
-.leaflet-control-layers-selector{
-  margin-top: 10px; 
+.leaflet-control-layers-selector {
+  margin-top: 10px;
 }
 .leaflet-retina .leaflet-control-layers-toggle {
-  background-image: url(layers2x.png)
+  background-image: url(layers2x.png);
 }
 .leaflet-bar a {
   background: $mainMedium;
   color: #ddd;
   &:hover {
     background: $mainDark;
-    
+
     color: #fff;
-   }
+  }
 }
 
 #aboutSentinel {
   position: absolute;
-  /*left: 50%;*/
-  right: 169px;
-  background: $mainMedium;
-  color: $primaryCol;
+  left: 50%;
+  transform: translateX(-50%);
   bottom: 0;
   z-index: 10;
-  /*padding: 2px;*/
-  padding-left: 5px;
-  padding-right: 5px;
+  padding: 6px;
   font-size: 11px;
   text-decoration: none;
   cursor: pointer;
+  background: $mainMedium;
+  color: $primaryCol;
 }
 
 .shareBar {
   position: absolute;
   left: 0;
-  bottom:0px;
+  bottom: 0px;
   right: 0;
-  background: rgba(0,0,0,.5);
+  background: rgba(0, 0, 0, 0.5);
   color: #fff;
   padding: 10px;
   text-align: center;
   transition: all ease 0.5s;
-  
-  a, button {
+
+  a,
+  button {
     color: #fff;
-    opacity: .7;
+    opacity: 0.7;
     display: inline-block;
     vertical-align: middle;
     margin: 2px 4px;
   }
-  a:hover, button:hover {
+  a:hover,
+  button:hover {
     opacity: 1;
   }
 }
 
-.copyNotification { 
-  background: $mainDark; 
-  padding: 10px; 
-  color: #00a600; 
-  position: fixed; 
-  left: 50%; 
-  top: -100px; 
-  z-index: 10000; 
-  margin-left: -170px; 
-  width: 300px; 
-  text-align: center; 
-  transition: all ease 0.4s; 
- 
-  &.visible { 
-    top: 30px; 
-  } 
-} 
+.copyNotification {
+  background: $mainDark;
+  padding: 10px;
+  color: #00a600;
+  position: fixed;
+  left: 50%;
+  top: -100px;
+  z-index: 10000;
+  margin-left: -170px;
+  width: 300px;
+  text-align: center;
+  transition: all ease 0.4s;
+
+  &.visible {
+    top: 30px;
+  }
+}
 
 @media screen and (max-width: 700px) {
   .leaflet-control-zoom {
@@ -237,28 +241,28 @@ div.socialLogin {
     bottom: 16px;
   }
 }
-.leaflet-bar a{
+.leaflet-bar a {
   display: inline-block;
-  background: #487191!important;
-  border-bottom: none!important; 
+  background: #487191 !important;
+  border-bottom: none !important;
 }
-.leaflet-bar a:hover{
+.leaflet-bar a:hover {
   display: inline-block;
-  background: #487191!important;
-  border-bottom: none!important;
+  background: #487191 !important;
+  border-bottom: none !important;
 }
 
-.leaflet-bar{
+.leaflet-bar {
   background: #487191;
 }
-.leaflet-control-attribution{
+.leaflet-control-attribution {
   top: 3px;
   right: -88px;
 }
-.leaflet-control-zoom.leaflet-bar.leaflet-control{
-  right: 90px;
-  top:6px;
-  position:absolute;
+.leaflet-control-zoom.leaflet-bar.leaflet-control {
+  right: 40px;
+  top: 6px;
+  position: absolute;
 }
 
 #leaflet_link {
@@ -266,7 +270,7 @@ div.socialLogin {
   background: $mainMedium;
   color: $primaryCol;
   bottom: 0;
-  right:10px;
+  right: 10px;
   z-index: 10;
   /*padding: 2px;*/
   padding-left: 5px;
@@ -287,14 +291,14 @@ div.socialLogin {
   font-size: 11px;
   text-decoration: none;
   cursor: pointer;
-  right:82px;
+  right: 82px;
 }
-#copyright_link{
+#copyright_link {
   position: absolute;
   background: $mainMedium;
   color: $primaryCol;
   bottom: 0;
-  right:0px;
+  right: 0px;
   z-index: 10;
   /*padding: 2px;*/
   padding-left: 5px;
@@ -303,28 +307,28 @@ div.socialLogin {
   text-decoration: none;
   cursor: pointer;
 }
-.linki{
-  display:inline-block;
+.linki {
+  display: inline-block;
 }
-.leaflet-control{
+.leaflet-control {
   white-space: nowrap;
 }
-.btn1{
-    font-size: 18px;
-    color: #9ab7cd;
-    border: none;
-    margin-top: 11px;
-    float: right;
-    margin-right: 62px;
-    background-color: #487191;
-    cursor: pointer;
+.btn1 {
+  font-size: 18px;
+  color: #9ab7cd;
+  border: none;
+  margin-top: 11px;
+  float: right;
+  margin-right: 62px;
+  background-color: #487191;
+  cursor: pointer;
 }
-.btn1:hover{
+.btn1:hover {
   color: white;
 }
-.leaflet-control-layers.leaflet-control a{
-    height: 30px!important;
-    padding: 0;
-    border-left: 1px solid rgba(255, 255, 255, 0.3);
-    margin-top: 6px;
+.leaflet-control-layers.leaflet-control a {
+  height: 30px !important;
+  padding: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  margin-top: 6px;
 }

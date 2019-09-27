@@ -1,63 +1,66 @@
-import React from 'react'
-import SimplePresetsHolder from './SimplePresetsHolder'
-import EffectsPanel from './EffectsPanel'
-import Tabs from 'react-simpletabs'
-import './Tools.scss'
-import Store from '../store'
-import logo from '../logo.png'
-import { connect } from 'react-redux'
+import React from 'react';
+import SimplePresetsHolder from './SimplePresetsHolder';
+import EffectsPanel from './EffectsPanel';
+import Tabs from 'react-simpletabs';
+import './Tools.scss';
+import Store from '../store';
+import logo from '../logo.png';
+import { connect } from 'react-redux';
 
-let tabPanel, menuPanel
+let tabPanel, menuPanel;
 
 class Tools extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       tabHeight: window.innerHeight
-    }
+    };
   }
 
   handleResize = () => {
-    let viewportWidth = window.innerWidth
-    let bottomMargin = 37
+    let viewportWidth = window.innerWidth;
+    let bottomMargin = 37;
     if (viewportWidth < 701) {
-      bottomMargin = 46
+      bottomMargin = 46;
     }
 
     this.setState({
       tabHeight: window.innerHeight - (menuPanel.offsetHeight + 60 + this.refs.footer.offsetHeight)
-    })
-    this.props.onResize()
-  }
+    });
+    this.props.onResize();
+  };
 
   componentDidUpdate() {
     if (tabPanel) {
-      tabPanel.style.maxHeight = this.state.tabHeight + 'px'
+      tabPanel.style.maxHeight = this.state.tabHeight + 'px';
     }
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.handleResize)
-    this.handleResize()
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener('resize', this.handleResize);
   }
 
   generateFooter() {
-    let { activeDatasource: { min, max, name }, zoom, currView } = Store.current
+    let { activeDatasource: { min, max, name }, zoom, currView } = Store.current;
     if (zoom < min || zoom > max) {
       return (
         <div className="notification">
           <i className="fa fa-warning" /> Zoom {zoom > max ? 'out' : 'in'} to view {name}
         </div>
-      )
+      );
     } else {
       return (
         <div>
           {currView !== Store.current.views.PRESETS && (
-            <a onClick={() => Store.setCurrentView(Store.current.views.PRESETS)} className="btn secondary">
+            <a
+              onClick={() => Store.setCurrentView(Store.current.views.PRESETS)}
+              className="btn secondary"
+            >
               <i className="fa fa-arrow-left" />Back to list
             </a>
           )}
@@ -65,14 +68,14 @@ class Tools extends React.Component {
             <i className="fa fa-print" />Generate
           </button>
         </div>
-      )
+      );
     }
   }
 
   onMount = (e, panel, menu) => {
-    tabPanel = panel
-    menuPanel = menu
-  }
+    tabPanel = panel;
+    menuPanel = menu;
+  };
 
   render() {
     return (
@@ -90,13 +93,8 @@ class Tools extends React.Component {
         </Tabs>
         <footer ref="footer">{this.generateFooter()}</footer>
       </div>
-    )
+    );
   }
 }
 
-Tools.propTypes = {
-  onResize: React.PropTypes.func,
-  doGenerate: React.PropTypes.func
-}
-
-export default connect(store => store)(Tools)
+export default connect(store => store)(Tools);

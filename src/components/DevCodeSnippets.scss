@@ -1,0 +1,160 @@
+@import '../variables.scss';
+
+.DevCodeSnippets {
+    height: 100%;
+    overflow: auto;
+}
+
+.DevCodeSnippets_Content {
+    /*overflow: auto;*/
+}
+
+.DevCodeSnippets_Title, 
+.DevCodeSnippets_SubTitle {
+    margin-top: 0;
+
+    &.api-key-input {
+        margin-bottom: 0.3em;
+    }
+
+    &.code-editor {
+        float: left;
+    }
+}
+
+.DevCodeSnippets_ViewTabs {
+    float: left;
+    margin-left: $basicMargin;
+    margin-top: 0.2em;
+    font-size: 0.8em;
+
+    &.active, &:hover {
+        text-decoration: underline;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.DevCodeSnippets_Options {
+    float: right;
+    margin-left: $basicMargin;
+    margin-top: 0.2em;
+    font-size: 0.8em;
+
+    &.active, &:hover {
+        text-decoration: underline;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+
+.DevCodeSnippets_ApiKeyGroup {
+    margin-left: 0.8 * $basicMargin;
+    margin-right: 0.8 * $basicMargin;
+    width: 70%;
+    display: table;
+}
+
+.DevCodeSnippets_ApiKeyInputWrapper {
+    width: 100%;
+    display: table-cell;
+}
+
+.DevCodeSnippets_ApiKeyInput {
+    width: 100%;
+    
+    padding: 0.8 * $basicMargin;
+    padding-left: 1 * $basicMargin;
+    padding-right: 1 * $basicMargin;
+    box-sizing: border-box;
+    border: none;
+
+}
+
+.DevCodeSnippets_ApiKeyButton {
+    display: table-cell;
+    padding: 0.8 * $basicMargin;
+    border: none;
+    background-color: rgb(232,232,232);
+    font-weight: 600;
+    color: black;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:focus, &:active {
+        outline: none;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .DevCodeSnippets_ApiKeyGroup {
+        /*width: 100%;*/
+    }
+
+    .DevCodeSnippets_sub700 {
+        clear: both;
+    }
+
+    .DevCodeSnippets_SubTitle.code-editor {
+        margin-bottom: 0;
+    }
+
+    .DevCodeSnippets_ViewTabs {
+        margin-left: 0;
+        margin-right: $basicMargin;
+        margin-bottom: 0.2em;
+    }
+
+    .DevCodeSnippets_Options {
+        margin-right: 0 !important;
+    }
+
+}
+
+
+.DevCodeSnippets_Column {
+    float: left;
+
+    &.Left {
+        width: 25%;
+    }
+
+    &.Right {
+        width: 75%;
+    }
+}
+
+.DevCodeSnippets_ColumnContent {
+    position: relative;
+    padding: $basicPadding;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+@media screen and (max-width: 700px) {
+    .DevCodeSnippets_Column {
+        &.Left {
+            width: 100%;
+        }
+
+        &.Right {
+            width: 75%;
+        }
+    }
+}
+
+.DevCodeSnippets_Maps li.active {
+    text-decoration: underline;
+}
+
+.DevCodeSnippets_Maps li:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
