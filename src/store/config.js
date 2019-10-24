@@ -53,7 +53,7 @@ const DATASOURCES = [
     noEffects: true,
     name: 'MODIS',
     datasourceID: 'MODIS',
-    min: 5,
+    min: 7,
     typeNames: 'DSS5'
   }
   // {

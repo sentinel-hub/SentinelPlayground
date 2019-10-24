@@ -47,7 +47,7 @@
     "redux-observable": "^0.14.1",
     "rodal": "^1.5.4",
     "rxjs": "^5.4.2",
-    "sentinelhub-js": "git+https://gitext.sinergise.com/team-6/sentinelhub-js.git#f63014a039367406693702fc22022744c1ac1ae4",
+    "sentinelhub-js": "git+https://gitext.sinergise.com/team-6/sentinelhub-js.git#2ddb4f2376fd6f3befa5dd167819ac17b8d28616",
     "styled-components": "^2.2.1",
     "urijs": "^1.18.10",
     "uuid": "^3.1.0",

@@ -9798,9 +9798,9 @@ send@0.16.2:
     range-parser "~1.2.0"
     statuses "~1.4.0"
 
-"sentinelhub-js@git+https://gitext.sinergise.com/team-6/sentinelhub-js.git#f63014a039367406693702fc22022744c1ac1ae4":
+"sentinelhub-js@git+https://gitext.sinergise.com/team-6/sentinelhub-js.git#2ddb4f2376fd6f3befa5dd167819ac17b8d28616":
   version "1.0.0"
-  resolved "git+https://gitext.sinergise.com/team-6/sentinelhub-js.git#f63014a039367406693702fc22022744c1ac1ae4"
+  resolved "git+https://gitext.sinergise.com/team-6/sentinelhub-js.git#2ddb4f2376fd6f3befa5dd167819ac17b8d28616"
   dependencies:
     "@turf/helpers" "^6.1.4"
     "@types/xml2js" "^0.4.4"
