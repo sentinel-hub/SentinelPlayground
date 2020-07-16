@@ -19,7 +19,7 @@
     "eo-components": "git+https://gitext.sinergise.com/team-6/eo-components.git#0.0.12",
     "font-awesome": "^4.6.3",
     "leaflet": "1.0.2",
-    "lodash": "^4.15.0",
+    "lodash": "^4.17.19",
     "moment": "^2.21.0",
     "npm-run-all": "^4.0.2",
     "nprogress": "^0.2.0",
