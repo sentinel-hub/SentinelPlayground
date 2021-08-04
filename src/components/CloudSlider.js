@@ -58,5 +58,4 @@ const CloudSlider = React.createClass({
   }
 });
 
-
 export default connect(store => store)(CloudSlider);

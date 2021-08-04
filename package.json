@@ -12,11 +12,12 @@
     "replace": "^0.3.0"
   },
   "dependencies": {
+    "@sentinel-hub/sentinelhub-js": "^0.2.54",
     "axios": "^0.17.1",
     "brace": "^0.10.0",
     "dragula": "^3.7.1",
     "encodeuri-safe": "0.0.1",
-    "eo-components": "git+https://gitext.sinergise.com/team-6/eo-components.git#0.0.12",
+    "eo-components": "git+https://gitext.sinergise.com/team-6/eo-components.git#0.0.14",
     "font-awesome": "^4.6.3",
     "leaflet": "1.0.2",
     "lodash": "^4.15.0",
@@ -47,7 +48,6 @@
     "redux-observable": "^0.14.1",
     "rodal": "^1.5.4",
     "rxjs": "^5.4.2",
-    "sentinelhub-js": "git+https://gitext.sinergise.com/team-6/sentinelhub-js.git#2ddb4f2376fd6f3befa5dd167819ac17b8d28616",
     "styled-components": "^2.2.1",
     "urijs": "^1.18.10",
     "uuid": "^3.1.0",
@@ -60,8 +60,8 @@
     "build": "react-scripts build",
     "update-previews": "node -r esm ./update-previews.js",
     "lint": "eslint --max-warnings 0 --ext .js src/",
-    "lint-prettier": "prettier --config .prettierrc -l 'src/**/*.js*' || (echo \nThese files are not formatted correctly && false)",
-    "prettier": "prettier --config .prettierrc --write 'src/**/*.js*'"
+    "lint-prettier": "prettier --config .prettierrc -l \"src/**/*.js*\" || (echo \nThese files are not formatted correctly && false)",
+    "prettier": "prettier --config .prettierrc --write \"src/**/*.js*\""
   },
   "eslintConfig": {
     "extends": "./node_modules/react-scripts/config/eslint.js"

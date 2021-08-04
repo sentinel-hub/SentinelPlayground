@@ -56,6 +56,16 @@ class BandsPanel extends React.Component {
       });
     this.renderRGB();
   }
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.activeDatasource &&
+      this.props.activeDatasource &&
+      prevProps.activeDatasource.id !== this.props.activeDatasource.id
+    ) {
+      Store.setEvalScript(btoa('return [' + getMultipliedLayers(Store.current.layers) + ']'));
+      this.renderRGB();
+    }
+  }
 
   getChannel(value, key) {
     let obj = Store.current.channels.filter(function(obj) {
@@ -83,8 +93,8 @@ class BandsPanel extends React.Component {
     if (_.includes(Store.current.layers, 'NULL')) {
       return (
         <div id="warning" className="notification">
-          <i className="fa fa-warning" />You need to fill all three channels to provide Sentinel
-          imagery.
+          <i className="fa fa-warning" />
+          You need to fill all three channels to provide Sentinel imagery.
         </div>
       );
     }

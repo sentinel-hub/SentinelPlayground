@@ -37,9 +37,10 @@ class RootMap extends React.Component {
     const { mapId } = this.state;
     const { center, zoom } = this.props;
 
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-      maxZoom: 20,
-      attribution: '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
     this.mainMap = L.map(mapId, {
       center: center,
@@ -130,7 +131,9 @@ class RootMap extends React.Component {
       // this.mapControls.removeLayer(this.sentL)
       this.mainMap.removeLayer(this.sentL);
     }
-    const { activeDatasource: { min } } = Store.current;
+    const {
+      activeDatasource: { min }
+    } = Store.current;
     const { url, urlProcessingApi, ...params } = getMapParameters();
     this.sentL = L.tileLayer.wms(`${url}?showLogo=false`, {
       attribution: '&copy; <a href="https://www.sentinel-hub.com" target="_blank">Sentinel Hub</a>',

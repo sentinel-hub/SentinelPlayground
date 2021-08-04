@@ -4,8 +4,9 @@ import EffectsPanel from './EffectsPanel';
 import Tabs from 'react-simpletabs';
 import './Tools.scss';
 import Store from '../store';
-import logo from '../logo.png';
+import logo from '../logo.svg';
 import { connect } from 'react-redux';
+import Banner from './Banner.js';
 
 let tabPanel, menuPanel;
 
@@ -19,13 +20,13 @@ class Tools extends React.Component {
 
   handleResize = () => {
     let viewportWidth = window.innerWidth;
-    let bottomMargin = 37;
+    let bottomMargin = 75;
     if (viewportWidth < 701) {
-      bottomMargin = 46;
+      bottomMargin = 75;
     }
 
     this.setState({
-      tabHeight: window.innerHeight - (menuPanel.offsetHeight + 60 + this.refs.footer.offsetHeight)
+      tabHeight: window.innerHeight - (menuPanel.offsetHeight + 180 + this.refs.footer.offsetHeight)
     });
     this.props.onResize();
   };
@@ -46,7 +47,11 @@ class Tools extends React.Component {
   }
 
   generateFooter() {
-    let { activeDatasource: { min, max, name }, zoom, currView } = Store.current;
+    let {
+      activeDatasource: { min, max, name },
+      zoom,
+      currView
+    } = Store.current;
     if (zoom < min || zoom > max) {
       return (
         <div className="notification">
@@ -61,11 +66,13 @@ class Tools extends React.Component {
               onClick={() => Store.setCurrentView(Store.current.views.PRESETS)}
               className="btn secondary"
             >
-              <i className="fa fa-arrow-left" />Back to list
+              <i className="fa fa-arrow-left" />
+              Back to list
             </a>
           )}
           <button onClick={this.props.doGenerate} className="btn">
-            <i className="fa fa-print" />Generate
+            <i className="fa fa-print" />
+            Generate
           </button>
         </div>
       );
@@ -91,7 +98,7 @@ class Tools extends React.Component {
             <EffectsPanel key={1} />
           </Tabs.Panel>
         </Tabs>
-        <footer ref="footer">{this.generateFooter()}</footer>
+        <footer ref="footer">{this.generateFooter()}<Banner /></footer>
       </div>
     );
   }

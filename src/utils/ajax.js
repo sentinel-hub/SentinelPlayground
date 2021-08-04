@@ -1,6 +1,5 @@
 import axios from 'axios';
 import Store from '../store';
-import { SentinelHubWms } from 'sentinelhub-js';
 import _ from 'lodash';
 import { getMultipliedLayers } from './utils';
 import bands from './bands.json';
@@ -28,8 +27,16 @@ export function loadGetCapabilities(ds, firstLoad = false) {
 
   return new Promise((resolve, reject) => {
     var parseString = require('xml2js').parseString;
-    new SentinelHubWms(url, datasourceID)
-      .getCapabilities({ format: isJsonResponse ? 'application/json' : 'text/xml' })
+
+    axios
+      .get(url, {
+        params: {
+          service: 'wms',
+          request: 'GetCapabilities',
+          format: isJsonResponse ? 'application/json' : 'text/xml'
+        }
+      })
+      .then(res => res.data)
       .then(res => {
         if (isJsonResponse) {
           const { layers, datasets } = res;
@@ -44,7 +51,7 @@ export function loadGetCapabilities(ds, firstLoad = false) {
             } else {
               // for the known layers we have preview images available in /public/previews/, but we must also
               // be able to display previews for user-defined ("Open in Playground") layers:
-              const [ , instanceId ] = url.split('/ogc/wms/');
+              const [, instanceId] = url.split('/ogc/wms/');
               const shortInstanceId = instanceId.substring(0, 8);
               const jpegFileName = `${shortInstanceId}-${layer.id}.jpeg`;
               let imageUrl;
@@ -54,18 +61,29 @@ export function loadGetCapabilities(ds, firstLoad = false) {
                 // user defined layer:
                 const bbox = '15,45.95347718,15.03818374,45.98047579';
                 const crs = 'CRS:84';
-                imageUrl = `${url}?showLogo=false&SERVICE=WMS&REQUEST=GetMap&LAYERS=${layer.id}&BBOX=${bbox}&CRS=${crs}&MAXCC=100&WIDTH=50&HEIGHT=50&gain=1&FORMAT=image/jpeg&bgcolor=00000000&transparent=1&TIME=2019-01-01/2019-07-01`;
+                imageUrl = `${url}?showLogo=false&SERVICE=WMS&REQUEST=GetMap&LAYERS=${
+                  layer.id
+                }&BBOX=${bbox}&CRS=${crs}&MAXCC=100&WIDTH=50&HEIGHT=50&gain=1&FORMAT=image/jpeg&bgcolor=00000000&transparent=1&TIME=2019-01-01/2019-07-01`;
               }
               presets.push({
                 ...layer,
-                image: imageUrl,
+                image: imageUrl
               });
-          }
+            }
           });
           if (channels.length === 0) {
             channels = datasets[0].name.includes('S2')
               ? bands.S2
-              : datasets[0].bands.map(b => ({ name: b }));
+              : datasets[0].bands
+                  .filter(b => {
+                    const { bandsRegex } = ds;
+                    if (bandsRegex) {
+                      return bandsRegex.test(b);
+                    } else {
+                      return true;
+                    }
+                  })
+                  .map(b => ({ name: b }));
           }
           Store.setChannels(channels, presets);
           const defaultPreset = presets[0].id;
@@ -111,7 +129,7 @@ export function loadGetCapabilities(ds, firstLoad = false) {
                   name: layers[l].Title[0],
                   desc: desc,
                   legendUrl: legendUrl,
-                  image: '/nopreview.jpeg',
+                  image: '/nopreview.jpeg'
                 });
               } else {
                 //fill bands
@@ -163,7 +181,9 @@ function getLegendUrl(layer) {
 
 // URL shortner - Google
 export function shortenUrl(longUrl) {
-  const url = `https://www.googleapis.com/urlshortener/v1/url?key=${process.env.REACT_APP_GOOGLE_API_KEY}`;
+  const url = `https://www.googleapis.com/urlshortener/v1/url?key=${
+    process.env.REACT_APP_GOOGLE_API_KEY
+  }`;
 
   let instance = axios.create({
     headers: { 'Content-Type': 'application/json' }

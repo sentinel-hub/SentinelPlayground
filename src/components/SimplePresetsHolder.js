@@ -81,7 +81,8 @@ class SimplePresetsHolder extends React.Component {
 
   getSimpleHolder() {
     const { legendObj, channels, legendVisible, presets, preset: storePreset } = Store.current;
-    const actualPresets = channels.length > 0 ? [customPreset, ...presets] : presets;
+    const sortedPresets = presets.sort((a, b) => a.id.localeCompare(b.id));
+    const actualPresets = channels.length > 0 ? [customPreset, ...sortedPresets] : sortedPresets;
     return (
       <div className="simplePresetsHolder">
         {actualPresets.map((preset, i) => {

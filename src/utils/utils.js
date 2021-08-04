@@ -14,7 +14,7 @@ function constructUrl({ url, datasources, instanceID }) {
 export function getMapParameters(isPrivate = false, showMore = false) {
   const {
     selectedDate,
-    activeDatasource: { url, urlProcessingApi },
+    activeDatasource: { url, urlProcessingApi, minDate },
     dateFormat,
     preset,
     evalscripturl,
@@ -29,11 +29,17 @@ export function getMapParameters(isPrivate = false, showMore = false) {
     maxcc,
     lat,
     lng,
-    zoom
+    zoom,
+    temporal
   } = Store.current;
-  const fromDate = moment(selectedDate)
-    .subtract('months', 1)
-    .startOf('month');
+
+  const fromDate =
+    isMultiTemporalDeploy() && temporal
+      ? moment(minDate)
+      : moment(selectedDate)
+          .subtract(6, 'months')
+          .startOf('month');
+
   let date = `${fromDate.format(dateFormat)}/${selectedDate.format(dateFormat)}`;
   let layersString = getLayersString();
   const cleanupUrl = isPrivate ? constructUrl({ url, datasources, instanceID }) : url;
@@ -42,6 +48,11 @@ export function getMapParameters(isPrivate = false, showMore = false) {
     urlProcessingApi: urlProcessingApi,
     maxcc
   };
+
+  if (isMultiTemporalDeploy()) {
+    paramObj.temporal = temporal;
+  }
+
   if (showMore) {
     paramObj = {
       ...paramObj,
@@ -236,4 +247,11 @@ export function getPolyfill() {
       }
     };
   }
+}
+
+export function isMultiTemporalDeploy() {
+  return (
+    process.env.REACT_APP_MULTI_TEMPORAL_DEPLOY &&
+    process.env.REACT_APP_MULTI_TEMPORAL_DEPLOY === 'true'
+  );
 }

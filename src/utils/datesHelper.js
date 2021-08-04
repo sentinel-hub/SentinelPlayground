@@ -12,24 +12,34 @@ function resetAll() {
 
 export function queryDates(date) {
   resetAll();
-  const { lat, lng, zoom, dateFormat, selectedDate } = Store.current;
+  const { lat, lng, zoom, dateFormat, selectedDate, activeDatasource } = Store.current;
+
   const bbox = calcBboxFromXY([lat, lng], zoom);
   const currDate = moment(date || selectedDate);
   const { from, to } = dateBuffer(currDate, dateFormat);
+  if (!activeDatasource.datesSupported) {
+    return new Promise((resolve, reject) => resolve([]));
+  }
+
   return new Promise((resolve, reject) => {
     axios
       .get(getWfsUrl({ from, to, bbox }))
       .then(res => {
-        const { data: { features } } = res;
+        const {
+          data: { features }
+        } = res;
         const datesArr = features.map(value => {
           let date = value.properties.date;
-          let cc = value.properties.cloudCoverPercentage;
+          let cc = value.properties.cloudCoverPercentage
+            ? value.properties.cloudCoverPercentage
+            : 0;
           cc = Math.round(cc);
           return {
             date,
             cc
           };
         });
+
         resolve(datesArr);
       })
       .catch(e => {
@@ -42,8 +52,8 @@ export function queryDates(date) {
 export function getClosestNextDate(previous = true) {
   const { availableDates, selectedDate } = Store.current;
   const goal = selectedDate.valueOf();
-  let final = availableDates.filter(
-    ad => (previous ? moment(ad.date).valueOf() < goal : moment(ad.date).valueOf() > goal)
+  let final = availableDates.filter(ad =>
+    previous ? moment(ad.date).valueOf() < goal : moment(ad.date).valueOf() > goal
   );
   if (final.length === 0) {
     return null;
@@ -80,7 +90,9 @@ function dateBuffer(formattedTimePoint, dateFormat) {
 }
 
 function getWfsUrl({ from, to, bbox }) {
-  const { activeDatasource: { id, url, typeNames } } = Store.current;
+  const {
+    activeDatasource: { id, url, typeNames }
+  } = Store.current;
   const maxFeatures = 100;
   let now = new Date().valueOf();
 

@@ -98,7 +98,9 @@ class DatasourceSwitch extends Component {
 
   switchDS = ds => {
     const { showLayer, loading } = this.state;
-    const { activeDatasource: { name } } = Store.current;
+    const {
+      activeDatasource: { name }
+    } = Store.current;
     if (ds.name === name) {
       this.setState({ showLayer: !showLayer, error: null }, () => {
         this.props.onToggle && this.props.onToggle(showLayer);
@@ -128,7 +130,9 @@ class DatasourceSwitch extends Component {
   }
 
   render() {
-    const { activeDatasource: { name } } = Store.current;
+    const {
+      activeDatasource: { name }
+    } = Store.current;
     const { sources, show, showLayer, loading } = this.state;
     return (
       <Style>

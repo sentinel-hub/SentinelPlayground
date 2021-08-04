@@ -4,6 +4,7 @@ import Store from '../store';
 import { connect } from 'react-redux';
 import 'react-toggle/style.css';
 import RCSlider from 'rc-slider';
+import { isMultiTemporalDeploy } from '../utils/utils';
 
 class EffectsPanel extends React.Component {
   constructor(props) {
@@ -17,11 +18,7 @@ class EffectsPanel extends React.Component {
   }
 
   logToLinear = (e, min, max) => {
-    return (Math.log(e) - Math.log(min)) / (Math.log(max) - Math.log(min)) * max;
-  };
-
-  updateAtmFilter = e => {
-    Store.setAtmFilter(e.target.checked ? 'ATMCOR' : '');
+    return ((Math.log(e) - Math.log(min)) / (Math.log(max) - Math.log(min))) * max;
   };
 
   updateGain = e => {
@@ -56,26 +53,15 @@ class EffectsPanel extends React.Component {
     Store.setShowDates(e.target.checked);
   };
 
+  toggleTemporal = e => {
+    Store.setTemporal(!Store.current.temporal);
+  };
+
   render() {
-    const { atmFilter, preset, showDates, activeDatasource: { noEffects } } = Store.current;
+    const { preset, showDates, temporal, activeDatasource } = Store.current;
     let isEvalScriptFromLayers = preset === 'CUSTOM';
     return (
       <div className="effectsPanel">
-        {!noEffects && (
-          <label>
-            <Toggle checked={atmFilter !== ''} onChange={this.updateAtmFilter} />
-            <span>Atmospheric correction</span>
-          </label>
-        )}
-        <div />
-        {/*<label>
-                    <Toggle
-                        checked={atmFilter !== ''}
-                        onChange={this.updateAtmFilter}/>
-                    <span>Atmospheric correction</span>
-        </label>*/}
-        <div />
-        <div />
         <label
           title={
             preset === 'CUSTOM'
@@ -84,13 +70,25 @@ class EffectsPanel extends React.Component {
           }
         >
           <Toggle
-            disabled={!isEvalScriptFromLayers && preset === 'CUSTOM'}
+            disabled={
+              (!isEvalScriptFromLayers && preset === 'CUSTOM') ||
+              !(activeDatasource && activeDatasource.datesSupported)
+            }
             checked={showDates}
             onChange={this.showDates}
           />
           <span>Show acquisition dates</span>
         </label>
         <div />
+        {isMultiTemporalDeploy() && (
+          <div>
+            <label>
+              <Toggle checked={temporal} onChange={this.toggleTemporal} />
+              <span>Enable temporal data</span>
+            </label>
+            <div />
+          </div>
+        )}
         <label>
           <span>Gain</span>
           <div className="gainSlider">

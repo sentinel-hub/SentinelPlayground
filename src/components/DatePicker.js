@@ -33,7 +33,7 @@ class MyDatePicker extends React.Component {
   }
 
   onDay = props => {
-    const { availableDates, dateFormat, maxcc } = Store.current;
+    const { availableDates, dateFormat, maxcc, activeDatasource } = Store.current;
     let propDate = props.dateMoment.format(dateFormat);
 
     let availableDay = availableDates.find(value => value.date === propDate);
@@ -47,7 +47,9 @@ class MyDatePicker extends React.Component {
 
     if (isInavailableDates && availableDay.cc <= maxcc) props.className = className + ' hasData';
 
-    props.title = `Cloud coverage: ${availableDay.cc}`;
+    props.title = `Cloud coverage: ${
+      activeDatasource.cloudCoverageSupported ? availableDay.cc : 'N/A'
+    }`;
 
     return props;
   };

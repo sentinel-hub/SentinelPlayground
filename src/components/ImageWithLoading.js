@@ -27,7 +27,8 @@ class ImageWithStatusText extends React.Component {
     if (!this.state.loaded) {
       return (
         <span className="spinner">
-          <i className="fa fa-cog fa-spin fa-3x fa-fw" />Generating image ...
+          <i className="fa fa-cog fa-spin fa-3x fa-fw" />
+          Generating image ...
         </span>
       );
     }

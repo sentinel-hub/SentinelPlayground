@@ -3,10 +3,10 @@
 
 #tools {
   position: absolute;
-  /*left: 10px;*/
-  top: 10px;
+  left: 0px;
+  top: 0px;
   background: #385168;
-  z-index: 1;
+  z-index: 12;
   width: $toolsWidth;
   color: #f4f4f4; /*$textColor; korekture miha*/
   /*box-shadow: 0 2px 5px #000;*/
@@ -18,9 +18,18 @@
 
   & > header {
     z-index: 1000;
-    padding: 3px 10px 3px 52px;
+    padding: 0px 0px 0px 65px;
     overflow: hidden;
     background: #487191;
+    height: 60px; /* #Controls element's CSS: padding-top: 10px; height: px; */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    img {
+      height: 80%;
+      width: 100%;
+    }
 
     h2 {
       text-transform: uppercase;
@@ -37,24 +46,23 @@
       cursor: pointer;
       font-size: 20px;
       color: #fff;
-
     }
   }
 
   footer {
     text-align: right;
-    padding: 15px;
+    padding: 10px 10px 7px;
     /*background: $mainMedium;*/
 
     .btn {
-      margin: 3px;
+      margin-bottom: 10px;
     }
   }
 
   .simplePresetsHolder a {
     display: block;
     color: #ddd;
-    opacity: .5;
+    opacity: 0.5;
     font-size: 13px;
     padding-left: 65px;
     padding-top: 10px;
@@ -75,7 +83,7 @@
       display: block;
       background: $mainMedium;
       border: 3px solid transparent;
-    }/*
+    } /*
     &:hover {
       opacity: 1;
     } korekture miha*/
@@ -96,7 +104,6 @@
       display: block;
     }
   }
-
 
   .scriptBtnPanel {
     text-align: center;
@@ -124,7 +131,8 @@
       padding: 6px 12px;
       border-bottom: 3px solid transparent;
 
-      img, i {
+      img,
+      i {
         font-size: 17px;
         fill: #aaa;
         display: block;
@@ -141,18 +149,17 @@
     }
   }
   &:after {
-    content: "";
+    content: '';
     display: block;
     clear: both;
   }
 }
 .tab-panel {
   overflow: auto;
-  
 }
 .floatItem {
   padding: 10px 0;
-  color: #9ab7cd!important;
+  color: #9ab7cd !important;
   margin: 0;
   margin-left: $basicMargin;
   height: $controlsHeight;
@@ -160,14 +167,14 @@
   overflow: visible;
 
   &.active {
-    background: rgba(255,255,255,0.4);
+    background: rgba(255, 255, 255, 0.4);
   }
   i {
     /*width: 36px;*/
     /*height: 36px;*/
     height: $controlsHeight;
     width: $controlsHeight;
-   /* background: $mainDark;*/
+    /* background: $mainDark;*/
     color: #9ab7cd;
     text-align: center;
     /*line-height: 34px;*/
@@ -176,10 +183,8 @@
     & + span {
       font-size: 15px;
       /*padding: 0 16px;klemen*/
-      
     }
   }
-
 }
 
 div.searchHolder i {
@@ -207,7 +212,7 @@ div.rc-slider {
   z-index: 3;
 
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     left: 45px;
     top: -4px;
@@ -230,7 +235,6 @@ div.rc-slider {
       display: inline-block;
       margin-bottom: 5px;
     }
-
   }
   .react-toggle,
   .gainSlider {
@@ -334,8 +338,9 @@ div.rc-slider {
     flex: 1;
     cursor: pointer;
 
-    &.active, &:hover {
-      box-shadow: 0 0 3px #fff
+    &.active,
+    &:hover {
+      box-shadow: 0 0 3px #fff;
     }
   }
 }
@@ -349,10 +354,10 @@ div.rc-slider {
 }
 
 @media screen and (max-width: 700px) {
-    #searchBox {
-        margin-right: $basicMargin;
-         margin-bottom: 20px;
-    }
+  #searchBox {
+    margin-right: $basicMargin;
+    margin-bottom: 20px;
+  }
 }
 
 #toggleSettings {
@@ -368,7 +373,6 @@ div.rc-slider {
   cursor: pointer;
   z-index: 101;
   transition: all ease 0.4s;
-  
 
   &.hidden {
     top: 9px;
@@ -376,20 +380,20 @@ div.rc-slider {
   }
 
   i {
-    margin: 5px;
+    margin: 5px 10px 5px 8px;
     display: block;
     width: 32px;
     height: 24px;
     font-size: 15px;
     line-height: 24px;
     transition: all ease 0.4s;
-    border-right: 1px solid rgba(255,255,255,0.4);
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
+    padding-right: 8px;
   }
 
   i.fa-cogs {
-    margin: 10px;
+    margin: 10px 10px 5px 13px;
     font-size: 18px;
-   
   }
 
   &.open {
@@ -455,7 +459,7 @@ div.rc-slider {
   #cloudFloat {
     background-color: #233c50;
   }
- 
+
   #searchBox {
     left: auto;
     z-index: 2;
@@ -475,14 +479,16 @@ div.rc-slider {
     margin: 5px;
     line-height: 30px;
   }
-  .colHolder, .colHolder div {
+  .colHolder,
+  .colHolder div {
     width: 35px;
     height: 35px;
     line-height: 35px;
-    text-shadow: none!important;
+    text-shadow: none !important;
   }
-  #separator, #separator1{
-    display: none!important;
+  #separator,
+  #separator1 {
+    display: none !important;
   }
 }
 @media screen and (min-width: 700px) {
@@ -494,130 +500,125 @@ div.rc-slider {
   }
 }
 
-#tools header img{
-margin-bottom: 7px;
-}
 .floatItem i + span {
   font-size: 14px;
 }
-#cloudFloat.floatItem.m-r-1-700.pull-right-700.active{
+#cloudFloat.floatItem.m-r-1-700.pull-right-700.active {
   background-color: #557a97;
-  color:white!important;
+  color: white !important;
   padding-right: 10px;
-  }
-#cloudFloat.floatItem.m-r-1-700.pull-right-700.active i{
-  background-color: #557a97;
-  color:white!important;
 }
-.react-date-field--expanded{
+#cloudFloat.floatItem.m-r-1-700.pull-right-700.active i {
   background-color: #557a97;
-  color:white!important;
+  color: white !important;
+}
+.react-date-field--expanded {
+  background-color: #557a97;
+  color: white !important;
 }
 @media screen and (max-width: 700px) {
-#cloudFloat.floatItem.m-r-1-700.pull-right-700.active{
-  background-color: #557a97;
-  color:white!important;
-  padding-right: 0px!important;
-}
-#cloudFloat.floatItem.m-r-1-700.pull-right-700.active i{
-  background-color: #233c50;
-  color:#9ab7cd!important;
+  #cloudFloat.floatItem.m-r-1-700.pull-right-700.active {
+    background-color: #557a97;
+    color: white !important;
+    padding-right: 0px !important;
   }
-  .cloudHolder{
+  #cloudFloat.floatItem.m-r-1-700.pull-right-700.active i {
+    background-color: #233c50;
+    color: #9ab7cd !important;
+  }
+  .cloudHolder {
     background-color: #233c50;
   }
- }
+}
 @media screen and (max-width: 953px) {
-   
- #cloudFloat.floatItem.m-r-1-700.pull-right-700.active{
-   background-color: #233c50;
-   padding-right: 12px;
-   }
- 
- .geosuggest__input-wrapper{
-   background-color: #487191;
+  #cloudFloat.floatItem.m-r-1-700.pull-right-700.active {
+    background-color: #233c50;
+    padding-right: 12px;
   }
-  #searchBox.active.floatItem{
-   white-space: nowrap;
-   min-width: 140px;  
+
+  .geosuggest__input-wrapper {
+    background-color: #487191;
   }
-  #searchBox.false.floatItem{
-   white-space: nowrap;
-   min-width: 140px;
-   margin-top: 10px;
- }
- .react-date-field--expanded{
-  background-color: #233c50;
+  #searchBox.active.floatItem {
+    white-space: nowrap;
+    min-width: 140px;
+  }
+  #searchBox.false.floatItem {
+    white-space: nowrap;
+    min-width: 140px;
+    margin-top: 10px;
+  }
+  .react-date-field--expanded {
+    background-color: #233c50;
   }
 }
 @media screen and (max-width: 953px) {
-
-  .geosuggest__input-wrapper{
+  .geosuggest__input-wrapper {
     background-color: #233c50;
     min-width: 100px;
-}
-   #separator{
-    display:none!important;
   }
-  #cloudFloat.floatItem.m-r-1-700.pull-right-700.active i{
+  #separator {
+    display: none !important;
+  }
+  #cloudFloat.floatItem.m-r-1-700.pull-right-700.active i {
     background-color: #233c50;
   }
-  .cloudHolder{
-    z-index:10;
+  .cloudHolder {
+    z-index: 10;
   }
   /*#cloudFloat {
     background-color: #233c50!important;
     }*/
-    #Controls .half-size{
-      width:49%!important;
-    }
+  #Controls .half-size {
+    width: 49% !important;
+  }
 }
 @media screen and (max-width: 700px) {
-  #searchBox.active.floatItem{
+  #searchBox.active.floatItem {
     min-width: 10px;
   }
-  #searchBox.false.floatItem{
+  #searchBox.false.floatItem {
     min-width: 10px;
-}
-  .floatItem.m-r-1-700.pull-right-700{
-     background-color: #233c50;
-     padding-right: 0px;
   }
-   #cloudFloat.floatItem.m-r-1-700.pull-right-700.active{
-     background-color: #487191;
-     padding-right: 0px;
+  .floatItem.m-r-1-700.pull-right-700 {
+    background-color: #233c50;
+    padding-right: 0px;
   }
-    #cloudFloat.floatItem.m-r-1-700.pull-right-700.active i{
-     background-color: #233c50;
-     padding-right: 0px;
-     clear: both;
-  }
-    .cloudHolder{
-     margin-top:0px!important;
-   }
-   #searchBox.floatItem.active{
-    background-color: #233c50!important;
-  }
-}
-  #searchBox.floatItem.active{
+  #cloudFloat.floatItem.m-r-1-700.pull-right-700.active {
     background-color: #487191;
+    padding-right: 0px;
   }
-  #searchBox.floatItem{
-    padding: 0;
-    }
-@media screen and (max-width: 882px) {
-    #cloudFloat.floatItem.m-r-1-700.pull-right-700{
-     padding-bottom: 10px;
-     padding-top: 10px;
-     clear: both;
-   }
-
+  #cloudFloat.floatItem.m-r-1-700.pull-right-700.active i {
+    background-color: #233c50;
+    padding-right: 0px;
+    clear: both;
+  }
+  .cloudHolder {
+    margin-top: 0px !important;
+  }
+  #searchBox.floatItem.active {
+    background-color: #233c50 !important;
+  }
 }
-.toggleBandMode:before{
+#searchBox.floatItem.active {
+  background-color: #487191;
+}
+#searchBox.floatItem {
+  padding: 0;
+}
+@media screen and (max-width: 882px) {
+  #cloudFloat.floatItem.m-r-1-700.pull-right-700 {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    clear: both;
+  }
+}
+.toggleBandMode:before {
   background: $mainLight;
 }
-.react-toggle--checked .react-toggle-track, .react-toggle.react-toggle--checked:hover .react-toggle-track {
-  background: $mainLight!important;
+.react-toggle--checked .react-toggle-track,
+.react-toggle.react-toggle--checked:hover .react-toggle-track {
+  background: $mainLight !important;
 }
 .react-toggle-thumb {
   background-color: #f4f4f4;
@@ -628,14 +629,13 @@ margin-bottom: 7px;
 }
 
 @media screen and (max-width: 953px) {
-   #searchBox.floatItem{
+  #searchBox.floatItem {
     background-color: #233c50;
-   }
-  #searchBox.active.floatItem{
+  }
+  #searchBox.active.floatItem {
     margin-top: 10px;
   }
-  #searchBox{
-    display:inline-block!important;
+  #searchBox {
+    display: inline-block !important;
   }
-
 }

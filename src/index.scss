@@ -34,7 +34,7 @@ a {
   color: #fff;
 
   i {
-    margin: calc(100vh/2 - 50px) auto 10px;
+    margin: calc(100vh / 2 - 50px) auto 10px;
     font-size: 45px;
     display: block;
   }
@@ -95,7 +95,7 @@ a {
   display: block;
   text-align: center;
   i {
-    margin: calc(100vh/2 - 50px) auto 10px;
+    margin: calc(100vh / 2 - 50px) auto 10px;
     font-size: 45px;
     display: block;
   }
@@ -173,19 +173,40 @@ div.socialLogin {
   }
 }
 
-#aboutSentinel {
+.footer {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
   bottom: 0;
-  z-index: 10;
-  padding: 6px;
-  font-size: 11px;
-  text-decoration: none;
-  cursor: pointer;
-  background: $mainMedium;
-  color: $primaryCol;
+  width: 100%;
+  height: auto;
+  background-color: $mainDark;
+  padding: 5px 0 1px;
+
+  .banner-footer {
+    max-width: 100%;
+    height: auto;
+    cursor: pointer;
+    margin: 0 5px;
+    bottom: 0;
+  }
 }
+
+@media screen and (max-width: 964px) {
+  
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    height: auto;
+  }
+} 
+
+@media screen and (max-width: 660px) {
+  
+  .footer {
+    display: none;
+  }
+} 
 
 .shareBar {
   position: absolute;
@@ -230,16 +251,11 @@ div.socialLogin {
   }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 800px) {
   .leaflet-control-zoom {
     display: none;
   }
-
-  #aboutSentinel {
-    left: auto;
-    right: 0px;
-    bottom: 16px;
-  }
+  
 }
 .leaflet-bar a {
   display: inline-block;
@@ -306,6 +322,7 @@ div.socialLogin {
   font-size: 11px;
   text-decoration: none;
   cursor: pointer;
+
 }
 .linki {
   display: inline-block;

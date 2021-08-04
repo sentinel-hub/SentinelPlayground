@@ -13,7 +13,7 @@ import { loadGetCapabilities } from './utils/ajax';
 import { queryDates, getClosestNextDate } from './utils/datesHelper';
 // import 'flatpickr/dist/themes/material_blue.css'
 // import Flatpickr from 'react-flatpickr'
-import { getPolyfill, b64EncodeUnicode } from './utils/utils';
+import { getPolyfill, b64EncodeUnicode, isMultiTemporalDeploy } from './utils/utils';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 import keydown from 'react-keydown';
@@ -25,6 +25,9 @@ import Draggable from 'react-draggable';
 import './App.scss';
 import DatasourceSwitch from './components/DatasourceSwitch';
 import axios from 'axios';
+import banner1 from './custom_script.png';
+import banner2 from './eobrowser.png';
+import banner3 from './gis.png';
 
 import AuthWindow from './components/AuthWindow';
 
@@ -146,7 +149,7 @@ class App extends Component {
   };
 
   doGenerate = () => {
-    Store.generateWmsUrl();
+    Store.generateImgDownloadParams();
     this.setState({ isModal: true, showImage: false });
   };
 
@@ -176,7 +179,8 @@ class App extends Component {
       zoom,
       showDates,
       maxcc,
-      atmFilter
+      atmFilter,
+      temporal
     } = this.paramsMap;
     const { datasources } = Store.current;
     let lmValue = '';
@@ -185,7 +189,8 @@ class App extends Component {
       const [, dsValue] = first.split(',');
       lmValue = dsValue;
     }
-    const datasource = datasources.find(ds => ds.id === (source || lmValue)) || datasources[0]; // fallback is S2
+    const defaultDatasource = datasources.find(ds => ds.datasourceID === 'S2L2A'); // fallback is S2L2A
+    const datasource = datasources.find(ds => ds.id === (source || lmValue)) || defaultDatasource;
     const { minDate, maxDate = moment(), id } = datasource;
     let obj = {};
     const selectedDate = moment(time && time.split('/')[1]);
@@ -203,7 +208,7 @@ class App extends Component {
       }/wms/${instanceID}`;
       obj.activeDatasource.private = true;
     }
-    return {
+    const params = {
       gain,
       gamma,
       lat,
@@ -222,6 +227,11 @@ class App extends Component {
       ...{ layers: layers ? this.getLayers(layers) : null },
       ...obj
     };
+
+    if (isMultiTemporalDeploy()) {
+      params.temporal = !!temporal;
+    }
+    return params;
   };
 
   getLayers = value => {
@@ -300,7 +310,14 @@ class App extends Component {
   getContent() {
     if (this.state.isLoaded) {
       const { error } = this.state;
-      const { presetsLegend, devMode, preset, activeDatasource } = Store.current;
+      const {
+        presetsLegend,
+        devMode,
+        preset,
+        activeDatasource,
+        imgDownloadBaseUrl,
+        imgDownloadWmsParams
+      } = Store.current;
       const presetLegend = _.find(presetsLegend, value => preset == value.name);
 
       return (
@@ -313,12 +330,15 @@ class App extends Component {
           {this.props.recaptchaAuthToken && (
             <Map ref={e => (this.map = e)} setTokenShouldBeUpdated={this.setTokenShouldBeUpdated} />
           )}
-          <div id="aboutSentinel">
-            <a
-              href="https://www.sentinel-hub.com/develop/documentation/api/ogc_api"
-              target="_blank"
-            >
-              Get Sentinel and Landsat imagery in your GIS
+          <div className="footer">
+            <a href="https://www.sentinel-hub.com/develop/custom-scripts/" target="_blank" className="banner-footer">
+              <img src={banner1}></img>
+            </a>
+            <a href="https://apps.sentinel-hub.com/eo-browser/" target="_blank" className="banner-footer">
+              <img src={banner2}></img>
+            </a>
+            <a href="https://www.sentinel-hub.com/" target="_blank" className="banner-footer">
+              <img src={banner3}></img>
             </a>
           </div>
           <div id="head">
@@ -354,7 +374,7 @@ class App extends Component {
                   isVisible={this.state.isDateVisible}
                   onExpand={e => this.getDates(e)}
                 />
-                {activeDatasource.name !== 'MODIS' && <CloudSlider />}
+                {!!activeDatasource.cloudCoverageSupported && <CloudSlider />}
                 <div className="clear-both-700" />
                 {devMode && <DevTools insertClass="rightOne" />}
               </div>
@@ -390,7 +410,11 @@ class App extends Component {
             onClose={this.hideModal}
           >
             {this.state.isModal && (
-              <GenerateImgPanel imgUrl={Store.current.imgWmsUrl} onCopy={this.onCopy} />
+              <GenerateImgPanel
+                baseUrl={imgDownloadBaseUrl}
+                wmsParams={imgDownloadWmsParams}
+                onCopy={this.onCopy}
+              />
             )}
           </Rodal>
 

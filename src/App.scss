@@ -270,8 +270,17 @@ div.clear-both-700{
 
 }
 .leaflet-bottom .leaflet-control-scale {
-    margin-bottom: 17px;
-    margin-right: 0px;
+    margin-bottom: 83px;
+    margin-right: 3px;
+
+        @media screen and (max-width: 964px) {
+        margin-bottom: 158px
+        }
+
+        @media screen and (max-width: 660px) {
+            margin-bottom: 20px
+            }
+
     }
 
 i.fa.fa-wrench{

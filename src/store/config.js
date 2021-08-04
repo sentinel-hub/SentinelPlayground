@@ -3,58 +3,92 @@ import moment from 'moment';
 const DATASOURCES = [
   {
     url: `https://services.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_S2L1C_INSTANCE_ID}`,
-    urlProcessingApi: `https://services.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_EVAL3_S2L1C_INSTANCE_ID}`,
-    index: 'http://services.sentinel-hub.com/index/v3/collections/S2L1C/searchIndex',
+    urlProcessingApi: `https://services.sentinel-hub.com/ogc/wms/${
+      process.env.REACT_APP_EVAL3_S2L1C_INSTANCE_ID
+    }`,
     minDate: '2015-01-01',
     id: 'S2',
     datasourceID: 'S2L1C',
     name: 'Sentinel-2 L1C',
-    typeNames: 'S2.TILE'
+    typeNames: 'S2.TILE',
+    cloudCoverageSupported: true,
+    datesSupported: true
   },
   {
     url: `https://services.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_S2L2A_INSTANCE_ID}`,
-    urlProcessingApi: `https://services.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_EVAL3_S2L2A_INSTANCE_ID}`,
-    index: 'http://services.sentinel-hub.com/index/v3/collections/S2L2A/searchIndex',
+    urlProcessingApi: `https://services.sentinel-hub.com/ogc/wms/${
+      process.env.REACT_APP_EVAL3_S2L2A_INSTANCE_ID
+    }`,
     minDate: '2017-03-28',
     id: 'S2L2A',
     datasourceID: 'S2L2A',
     name: 'Sentinel-2 L2A',
     typeNames: 'DSS2',
-    min: 9
+    min: 9,
+    cloudCoverageSupported: true,
+    datesSupported: true
   },
   {
-    url: `https://services-uswest2.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_L8L1C_INSTANCE_ID}`,
-    urlProcessingApi: `https://services-uswest2.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_EVAL3_L8L1C_INSTANCE_ID}`,
-    index: 'https://services-uswest2.sentinel-hub.com/index/v3/collections/L8L1C/searchIndex',
+    url: `https://services-uswest2.sentinel-hub.com/ogc/wms/${
+      process.env.REACT_APP_LOTL1_INSTANCE_ID
+    }`,
+    urlProcessingApi: `https://services-uswest2.sentinel-hub.com/ogc/wms/${
+      process.env.REACT_APP_EVAL3_LOTL1_INSTANCE_ID
+    }`,
     minDate: '2013-01-01',
     id: 'L8',
-    datasourceID: 'L8L1C',
+    datasourceID: 'LOTL1',
     name: 'Landsat 8',
     min: 10,
-    typeNames: 'DSS6'
+    typeNames: 'DSS12',
+    cloudCoverageSupported: true,
+    datesSupported: true
   },
   {
-    url: `https://services-uswest2.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_DEM_INSTANCE_ID}`,
-    urlProcessingApi: `https://services-uswest2.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_EVAL3_DEM_INSTANCE_ID}`,
-    index: 'https://services-uswest2.sentinel-hub.com/index/v3/collections/DEM/searchIndex',
+    url: `https://services.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_DEM_INSTANCE_ID}`,
+    urlProcessingApi: `https://services.sentinel-hub.com/ogc/wms/${
+      process.env.REACT_APP_EVAL3_DEM_INSTANCE_ID
+    }`,
     minDate: '2013-01-01',
     id: 'DEM',
     name: 'DEM',
     datasourceID: 'DEM',
     min: 2,
-    typeNames: 'DSS4'
+    typeNames: 'DSS4',
+    cloudCoverageSupported: false,
+    datesSupported: false
   },
   {
-    url: `https://services-uswest2.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_MODIS_INSTANCE_ID}`,
-    urlProcessingApi: `https://services-uswest2.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_EVAL3_MODIS_INSTANCE_ID}`,
-    index: 'https://services-uswest2.sentinel-hub.com/index/v3/collections/MODIS/searchIndex',
+    url: `https://services-uswest2.sentinel-hub.com/ogc/wms/${
+      process.env.REACT_APP_MODIS_INSTANCE_ID
+    }`,
+    urlProcessingApi: `https://services-uswest2.sentinel-hub.com/ogc/wms/${
+      process.env.REACT_APP_EVAL3_MODIS_INSTANCE_ID
+    }`,
     minDate: '2013-01-01',
     id: 'Modis',
     noEffects: true,
     name: 'MODIS',
     datasourceID: 'MODIS',
     min: 7,
-    typeNames: 'DSS5'
+    typeNames: 'DSS5',
+    cloudCoverageSupported: false,
+    datesSupported: true
+  },
+  {
+    url: `https://services.sentinel-hub.com/ogc/wms/${process.env.REACT_APP_S1_AWS_IW_VVHV}`,
+    urlProcessingApi: `https://services.sentinel-hub.com/ogc/wms/${
+      process.env.REACT_APP_EVAL3_S1_AWS_IW_VVHV
+    }`,
+    minDate: '2017-01-01',
+    id: 'S1-AWS-IW-VVVH',
+    datasourceID: 'S1GRD',
+    name: 'Sentinel-1 (IW-VVVH)',
+    typeNames: 'DSS3',
+    min: 1,
+    cloudCoverageSupported: false,
+    bandsRegex: /^(VV|VH)$/i,
+    datesSupported: true
   }
   // {
   //   minDate: '2014-04-03',
@@ -158,7 +192,8 @@ export default {
   renderedEvalscript: '',
   opacity: 100,
   maxcc: 20,
-  imgWmsUrl: '',
+  imgDownloadBaseUrl: null,
+  imgDownloadWmsParams: null,
   mapBounds: {},
   minDate: '2015-01-01', // deprecated
   maxDate: moment(),

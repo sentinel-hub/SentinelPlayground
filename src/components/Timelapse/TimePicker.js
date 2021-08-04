@@ -6,7 +6,10 @@ export default class Timepicker extends Component {
   constructor(props) {
     super(props);
 
-    const { dateRange: { from, to }, dateFormat } = this.props;
+    const {
+      dateRange: { from, to },
+      dateFormat
+    } = this.props;
     this.state = {
       fromText: from.format(dateFormat),
       toText: to.format(dateFormat),

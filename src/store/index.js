@@ -1,13 +1,11 @@
 import config from './config';
 import _ from 'lodash';
 
-import { SentinelHubWms } from 'sentinelhub-js';
-
 import URI from 'urijs';
 import { calcBboxFromXY } from '../utils/coords';
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
 import { createStore, applyMiddleware, compose } from 'redux';
-import { getMultipliedLayers } from '../utils/utils';
+import { getMultipliedLayers, isMultiTemporalDeploy } from '../utils/utils';
 import moment from 'moment';
 
 // eslint-disable-next-line
@@ -42,7 +40,7 @@ const SET_MAXCC = 'SET_MAXCC',
   SET_LNG = 'SET_LNG',
   SET_ZOOM = 'SET_ZOOM',
   SET_SIZE = 'SET_SIZE',
-  GENERATE_WMS_URL = 'GENERATE_WMS_URL',
+  GENERATE_IMG_DOWNLOAD_PARAMS = 'GENERATE_IMG_DOWNLOAD_PARAMS',
   REFRESH = 'REFRESH',
   SET_PATH = 'SET_PATH',
   SET_ACTIVE_BASE_LAYER = 'SET_ACTIVE_BASE_LAYER',
@@ -58,7 +56,8 @@ const SET_MAXCC = 'SET_MAXCC',
   SET_LEGEND_HEIGHT = 'SET_LEGEND_HEIGHT',
   SET_LEGEND_WIDTH = 'SET_LEGEND_WIDTH',
   SET_LEGEND_OBJ = 'SET_LEGEND_OBJ',
-  SET_RECAPTCHA_AUTH_TOKEN = 'SET_RECAPTCHA_AUTH_TOKEN';
+  SET_RECAPTCHA_AUTH_TOKEN = 'SET_RECAPTCHA_AUTH_TOKEN',
+  SET_TEMPORAL = 'SET_TEMPORAL';
 
 const Reducers = {
   SET_MAXCC: maxcc => ({ maxcc }),
@@ -106,7 +105,7 @@ const Reducers = {
   SET_EVAL_URL: evalscripturl => ({ evalscripturl }),
   SET_SIZE: size => ({ size }),
   SET_CURRENT_DATE: currentDate => ({ currentDate }),
-  GENERATE_WMS_URL: generateWmsUrl,
+  GENERATE_IMG_DOWNLOAD_PARAMS: generateImgDownloadParams,
   SET_PATH: updatePath,
   REFRESH: () => ({}),
   SET_ACTIVE_BASE_LAYER: setActiveBaseLayer,
@@ -125,6 +124,7 @@ const Reducers = {
   SET_LEGEND_WIDTH: legendWidth => ({ legendWidth }),
   SET_LEGEND_OBJ: legendObj => ({ legendObj }),
   SET_RECAPTCHA_AUTH_TOKEN: recaptchaAuthToken => ({ recaptchaAuthToken }),
+  SET_TEMPORAL: temporal => ({ temporal })
 };
 
 const DoesNeedRefresh = [
@@ -136,7 +136,8 @@ const DoesNeedRefresh = [
   SET_CLOCOR,
   SET_GAIN,
   SET_GAMMA,
-  SET_DATASOURCE
+  SET_DATASOURCE,
+  SET_TEMPORAL
 ];
 const DoRefreshUrl = [
   SET_DATASOURCE,
@@ -154,7 +155,8 @@ const DoRefreshUrl = [
   SET_GAIN,
   SET_GAMMA,
   SET_DEV_MODE,
-  SET_EVAL_MODE
+  SET_EVAL_MODE,
+  SET_TEMPORAL
 ];
 
 function updatePath() {
@@ -166,7 +168,7 @@ function updatePath() {
     baseWmsUrl,
     instanceID,
     datasources,
-    activeDatasource: { id, url },
+    activeDatasource: { id, url, minDate },
     lat,
     lng,
     preset,
@@ -176,14 +178,19 @@ function updatePath() {
     zoom,
     evalscripturl,
     atmFilter,
-    showDates
+    showDates,
+    temporal
   } = this;
   const pLayers = Object.keys(layers)
     .map(k => layers[k])
     .join(',');
-  const fromDate = moment(this.selectedDate)
-    .subtract('months', 6)
-    .startOf('month');
+  const fromDate =
+    isMultiTemporalDeploy() && temporal
+      ? moment(minDate)
+      : moment(this.selectedDate)
+          .subtract(6, 'months')
+          .startOf('month');
+
   const pTime = `${fromDate.format(dateFormat)}%7C${moment(selectedDate).format(dateFormat)}`;
   const es = encodeURIComponent(evalscript);
   const evalScriptParam =
@@ -209,6 +216,10 @@ function updatePath() {
   if (preset === 'CUSTOM') {
     evalScriptParam.length !== '' && params.push(`${evalScriptParam}`);
     evalscripturl !== '' && params.push(`evalscripturl=${evalscripturl}`);
+  }
+
+  if (isMultiTemporalDeploy()) {
+    params.push(`temporal=${temporal}`);
   }
 
   const path = params.join('&');
@@ -252,23 +263,29 @@ function setActiveBaseLayer(name, minmax) {
   };
 }
 
-function generateWmsUrl() {
-  const { isEvalUrl, evalscripturl } = this;
-  const { url: dsUrl, name, id, datasourceID } = this.activeDatasource;
-  const fromDate = moment(this.selectedDate)
-    .subtract('month', 6)
-    .startOf('month');
+//this is used for generating images only!
+function generateImgDownloadParams() {
+  const { isEvalUrl, evalscripturl, temporal } = this;
+  const { url: dsUrl, name, id, datasourceID, minDate } = this.activeDatasource;
+  const fromDate =
+    isMultiTemporalDeploy() && temporal
+      ? moment(minDate)
+      : moment(this.selectedDate)
+          .subtract(6, 'months')
+          .startOf('month');
+
   const dateLayer = this.showDates ? ',DATE' : '';
 
   let params = {
     maxcc: this.maxcc,
-    layers: (this.preset === 'CUSTOM' ? this.presets[1].id : this.preset) + dateLayer,
+    layers: (this.preset === 'CUSTOM' ? this.presets[0].id : this.preset) + dateLayer,
     evalsource: id || 'S2',
     width: this.size[0] - 80,
     height: this.size[1] - 100,
     format: 'image/jpeg',
     nicename: `${name} image on ${this.selectedDate.format(this.dateFormat)}.jpg`,
     bbox: calcBboxFromXY([this.lat, this.lng], this.zoom).join(','),
+    crs: 'EPSG:3857',
     time: `${fromDate.format(this.dateFormat)}/${this.selectedDate.format(this.dateFormat)}`,
     showlogo: true,
     bgcolor: '000000'
@@ -292,9 +309,11 @@ function generateWmsUrl() {
     }
   }
 
-  const getMapUrl = new SentinelHubWms(dsUrl, datasourceID).getMapUrl(params);
+  if (isMultiTemporalDeploy()) {
+    params.temporal = temporal;
+  }
 
-  return { imgWmsUrl: getMapUrl };
+  return { imgDownloadBaseUrl: dsUrl, imgDownloadWmsParams: params };
 }
 
 function setPresetsLegend(value) {
@@ -376,7 +395,7 @@ export default {
   setZoom: action(SET_ZOOM),
   setSize: action(SET_SIZE),
   refresh: action(REFRESH),
-  generateWmsUrl: action(GENERATE_WMS_URL),
+  generateImgDownloadParams: action(GENERATE_IMG_DOWNLOAD_PARAMS),
   updatePath: action(SET_PATH),
   setActiveBaseLayer: action(SET_ACTIVE_BASE_LAYER),
   setLegendVisiblity: action(SET_LEGEND_VISIBILITY),
@@ -393,4 +412,5 @@ export default {
   setEvalMode: action(SET_EVAL_MODE),
   setLegendObj: action(SET_LEGEND_OBJ),
   setRecaptchaAuthToken: action(SET_RECAPTCHA_AUTH_TOKEN),
+  setTemporal: action(SET_TEMPORAL)
 };

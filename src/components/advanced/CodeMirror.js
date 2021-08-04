@@ -105,7 +105,8 @@ class CodeMirror extends React.Component {
         </div>
         <div className="scriptBtnPanel">
           <button onClick={Store.refresh} className="btn">
-            <i className="fa fa-refresh" />Refresh
+            <i className="fa fa-refresh" />
+            Refresh
           </button>
         </div>
       </div>

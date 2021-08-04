@@ -215,8 +215,9 @@ export default class DevCodeSnippets extends React.Component {
                       marginTop: '0'
                     }}
                   >
-                    <i className="fa fa-info" />&nbsp; Your Google Maps code example won't work
-                    without a valid Google Maps API key. Click{' '}
+                    <i className="fa fa-info" />
+                    &nbsp; Your Google Maps code example won't work without a valid Google Maps API
+                    key. Click{' '}
                     <a
                       href="https://developers.google.com/maps/documentation/javascript/get-api-key"
                       target="_blank"
