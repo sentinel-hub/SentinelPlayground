@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@sentinel-hub/sentinelhub-js": "^0.2.54",
-    "axios": "^0.17.1",
+    "axios": "^0.21.1",
     "brace": "^0.10.0",
     "dragula": "^3.7.1",
     "encodeuri-safe": "0.0.1",
