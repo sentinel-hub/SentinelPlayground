@@ -9,10 +9,10 @@ For state management it uses [Redux](https://github.com/reactjs/redux). Map is b
 Node.js version 8.x must be used to run app successfully.
 
 ```
-- npm install
+- yarn install
 - open src/store/config.js and insert your Sentinel API key
-- npm start (for local testing)
-- npm run build (prepare application for deploy)
+- yarn start (for local testing)
+- yarn build (prepare application for deploy)
 ```
 
 ## Acquiring Sentinel API key
