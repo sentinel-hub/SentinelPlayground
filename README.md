@@ -1,4 +1,4 @@
-Sentinel Playground has been made open-source to provide an easier way of trying the Sentinel Hub WMS services.
+Sentinel Playground has been made open-source to provide an easier way of trying the Sentinel Hub API services.
 Project is built with [React](https://facebook.github.io/react/), more specifically with [Create React App](https://github.com/facebookincubator/create-react-app).
 For state management it uses [Redux](https://github.com/reactjs/redux). Map is based on [Leaflet](http://leafletjs.com/).
 
@@ -17,6 +17,6 @@ Node.js version 8.x must be used to run app successfully.
 
 ## Acquiring Sentinel API key
 
-To use Sentinel WMS service, you need to have your API key. You can get test API key by writing mail to [info@sentinel-hub.com](mailto:info@sentinel-hub.com).
-For more info about WMS service, check [www.sentinel-hub.com/apps/wms](http://www.sentinel-hub.com/apps/wms).
+To use Sentinel API service, you need to have your API key. You can get test API key by writing mail to [info@sentinel-hub.com](mailto:info@sentinel-hub.com).
+For more info about API service, check [https://docs.sentinel-hub.com/api/latest/](https://docs.sentinel-hub.com/api/latest/).
 
