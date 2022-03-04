@@ -141,12 +141,12 @@ class DatasourceSwitch extends Component {
         </a>
         {show && (
           <div className={loading && 'loading'}>
-            <h3>Datasets {loading && <i className="fa fa-spinner fa-spin" />}</h3>
+            <h3>Collections {loading && <i className="fa fa-spinner fa-spin" />}</h3>
             {sources.map((ds, i) => {
               const active = ds.name === name;
               return (
                 <a key={i} className={active && 'active'} onClick={() => this.switchDS(ds)}>
-                  <i className={`fa fa-${showLayer && active ? 'check-square' : 'square-o'}`} />
+                  <i className={`fa fa-${showLayer && active ? 'dot-circle-o' : 'circle-o'}`} />
                   {ds.name}
                 </a>
               );

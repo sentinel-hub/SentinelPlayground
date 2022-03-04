@@ -38,7 +38,7 @@ const DATASOURCES = [
     minDate: '2013-01-01',
     id: 'L8',
     datasourceID: 'LOTL1',
-    name: 'Landsat 8',
+    name: 'Landsat 8-9',
     min: 10,
     typeNames: 'DSS12',
     cloudCoverageSupported: true,
