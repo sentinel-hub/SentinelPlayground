@@ -98,9 +98,9 @@ class CodeMirror extends React.Component {
               style={{ marginLeft: 7 }}
             />
           ) : (
-            <a onClick={this.loadCode}>
+            <span style={{ color: '#c9ced4' }} onClick={this.loadCode}>
               <i className={`fa fa-refresh ${loading && 'fa-spin'}`} style={{ marginLeft: 7 }} />
-            </a>
+            </span>
           )}
         </div>
         <div className="scriptBtnPanel">

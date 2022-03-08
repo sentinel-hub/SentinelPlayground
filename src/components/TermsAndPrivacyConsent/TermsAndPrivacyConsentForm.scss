@@ -1,0 +1,31 @@
+.terms-and-privacy {
+  height: 100%;
+
+  .reject-message {
+    text-align: center;
+  }
+
+  .button-holder {
+    display: inline-block;
+    margin-top: 20px;
+
+    .btn {
+      margin-right: 10px;
+      width: 60px;
+      text-align: center;
+    }
+  }
+
+  .log-in-option {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+
+  .learn-more {
+    margin-top: 10px;
+  }
+
+  .back-btn {
+    margin-top: 15px;
+  }
+}

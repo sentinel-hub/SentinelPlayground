@@ -30,6 +30,7 @@ import banner2 from './eobrowser.png';
 import banner3 from './gis.png';
 
 import AuthWindow from './components/AuthWindow';
+import TermsAndPrivacyConsentForm from './components/TermsAndPrivacyConsent/TermsAndPrivacyConsentForm';
 
 let oldUrl = null;
 try {
@@ -81,11 +82,16 @@ class App extends Component {
     const datasourceAndParams = this.createDatasourceAndParams();
     _.merge(Store.current, datasourceAndParams);
 
-    queryDates().then(res => {
-      Store.setNextDate(getClosestNextDate(false));
-      Store.setPrevDate(getClosestNextDate(true));
-    });
-    loadGetCapabilities(Store.current.activeDatasource, true)
+    queryDates()
+      .then(res => {
+        Store.setNextDate(getClosestNextDate(false));
+        Store.setPrevDate(getClosestNextDate(true));
+      })
+      .catch(e => {
+        console.error(e);
+      });
+    const activeDS = Store.current.activeDatasource;
+    loadGetCapabilities(activeDS, true)
       .then(() => {
         this.setState({
           isLoaded: true,
@@ -100,9 +106,10 @@ class App extends Component {
       })
       .catch(e => {
         this.setState({
-          loadError: true,
-          loadMessage: JSON.stringify(e)
+          error: `Could not load data for ${activeDS.name}. Try selecting a different collection.`,
+          isLoaded: true
         });
+        console.error(e);
       });
     Store.setSize([window.innerWidth, window.innerHeight]);
   }
@@ -248,11 +255,15 @@ class App extends Component {
     showImage && this.doGenerate();
   };
   getDates = from => {
-    queryDates(from).then(res => {
-      Store.setAvailableDates(res);
-      Store.setPrevDate(getClosestNextDate(true));
-      Store.setNextDate(getClosestNextDate(false));
-    });
+    queryDates(from)
+      .then(res => {
+        Store.setAvailableDates(res);
+        Store.setPrevDate(getClosestNextDate(true));
+        Store.setNextDate(getClosestNextDate(false));
+      })
+      .catch(e => {
+        console.error(e);
+      });
   };
   loadEvalscript = value => {
     const url = window.decodeURIComponent(value);
@@ -316,29 +327,49 @@ class App extends Component {
         preset,
         activeDatasource,
         imgDownloadBaseUrl,
-        imgDownloadWmsParams
+        imgDownloadWmsParams,
+        termsPrivacyAccepted
       } = Store.current;
       const presetLegend = _.find(presetsLegend, value => preset == value.name);
 
       return (
         <div>
-          <AuthWindow
-            setToken={this.setAuthToken}
-            tokenShouldBeUpdated={this.state.tokenShouldBeUpdated}
-            setTokenShouldBeUpdated={this.setTokenShouldBeUpdated}
-          />
-          {this.props.recaptchaAuthToken && (
-            <Map ref={e => (this.map = e)} setTokenShouldBeUpdated={this.setTokenShouldBeUpdated} />
+          {!termsPrivacyAccepted && <TermsAndPrivacyConsentForm />}
+
+          {termsPrivacyAccepted && (
+            <AuthWindow
+              setToken={this.setAuthToken}
+              tokenShouldBeUpdated={this.state.tokenShouldBeUpdated}
+              setTokenShouldBeUpdated={this.setTokenShouldBeUpdated}
+            />
           )}
+
+          <Map ref={e => (this.map = e)} setTokenShouldBeUpdated={this.setTokenShouldBeUpdated} />
+
           <div className="footer">
-            <a href="https://www.sentinel-hub.com/develop/custom-scripts/" target="_blank" className="banner-footer">
-              <img src={banner1}></img>
+            <a
+              href="https://www.sentinel-hub.com/develop/custom-scripts/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="banner-footer"
+            >
+              <img src={banner1} alt="banner1" />
             </a>
-            <a href="https://apps.sentinel-hub.com/eo-browser/" target="_blank" className="banner-footer">
-              <img src={banner2}></img>
+            <a
+              href="https://apps.sentinel-hub.com/eo-browser/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="banner-footer"
+            >
+              <img src={banner2} alt="banner2" />
             </a>
-            <a href="https://www.sentinel-hub.com/" target="_blank" className="banner-footer">
-              <img src={banner3}></img>
+            <a
+              href="https://www.sentinel-hub.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="banner-footer"
+            >
+              <img src={banner3} alt="banner3" />
             </a>
           </div>
           <div id="head">

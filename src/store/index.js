@@ -57,7 +57,8 @@ const SET_MAXCC = 'SET_MAXCC',
   SET_LEGEND_WIDTH = 'SET_LEGEND_WIDTH',
   SET_LEGEND_OBJ = 'SET_LEGEND_OBJ',
   SET_RECAPTCHA_AUTH_TOKEN = 'SET_RECAPTCHA_AUTH_TOKEN',
-  SET_TEMPORAL = 'SET_TEMPORAL';
+  SET_TEMPORAL = 'SET_TEMPORAL',
+  SET_TERMS_PRIVACY_ACCEPTED = 'SET_TERMS_PRIVACY_ACCEPTED';
 
 const Reducers = {
   SET_MAXCC: maxcc => ({ maxcc }),
@@ -124,7 +125,8 @@ const Reducers = {
   SET_LEGEND_WIDTH: legendWidth => ({ legendWidth }),
   SET_LEGEND_OBJ: legendObj => ({ legendObj }),
   SET_RECAPTCHA_AUTH_TOKEN: recaptchaAuthToken => ({ recaptchaAuthToken }),
-  SET_TEMPORAL: temporal => ({ temporal })
+  SET_TEMPORAL: temporal => ({ temporal }),
+  SET_TERMS_PRIVACY_ACCEPTED: termsPrivacyAccepted => ({ termsPrivacyAccepted })
 };
 
 const DoesNeedRefresh = [
@@ -181,9 +183,11 @@ function updatePath() {
     showDates,
     temporal
   } = this;
-  const pLayers = Object.keys(layers)
-    .map(k => layers[k])
-    .join(',');
+  const pLayers = layers
+    ? Object.keys(layers)
+        .map(k => layers[k])
+        .join(',')
+    : '';
   const fromDate =
     isMultiTemporalDeploy() && temporal
       ? moment(minDate)
@@ -412,5 +416,6 @@ export default {
   setEvalMode: action(SET_EVAL_MODE),
   setLegendObj: action(SET_LEGEND_OBJ),
   setRecaptchaAuthToken: action(SET_RECAPTCHA_AUTH_TOKEN),
-  setTemporal: action(SET_TEMPORAL)
+  setTemporal: action(SET_TEMPORAL),
+  setTermsPrivacyAccepted: action(SET_TERMS_PRIVACY_ACCEPTED)
 };

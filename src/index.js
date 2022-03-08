@@ -7,13 +7,16 @@ import './toast.css';
 
 import './index.scss';
 import { Provider } from 'react-redux';
+import EnsureTermsPrivacy from './components/TermsAndPrivacyConsent/EnsureTermsPrivacy';
 import Store from './store';
 
 const rootEl = document.getElementById('root');
 
 ReactDOM.render(
   <Provider store={Store.Store}>
-    <App />
+    <EnsureTermsPrivacy>
+      <App />
+    </EnsureTermsPrivacy>
   </Provider>,
   rootEl
 );

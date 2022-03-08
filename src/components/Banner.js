@@ -17,7 +17,10 @@ export default class Banner extends React.Component {
 
     return (
       <div className="footer-banner">
-        <ExternalLink className="banner-link" href="https://www.sentinel-hub.com/develop/community/twitter-challenge-nov-2021/">
+        <ExternalLink
+          className="banner-link"
+          href="https://www.sentinel-hub.com/develop/community/twitter-challenge-nov-2021/"
+        >
           <img src={banner} alt="Sentinel Hub Twitter Challenge" className="banner-img" />
         </ExternalLink>
       </div>

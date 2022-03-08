@@ -69,14 +69,15 @@ class ImageWithStatusText extends React.Component {
             role="presentation"
             crossOrigin="Anonymous"
             id="sentinelImage"
+            alt="image"
             style={{ display: loaded ? 'block' : 'none' }}
             src={this.props.imageUrl}
             onLoad={this.handleImageLoaded}
             onError={e => this.handleImageError(e)}
           />
         )}
-        <img src={deepart} style={{ display: 'none' }} id="deepart" />
-        {this.state.hasEffect && <img src={this.state.effectImg} />}
+        <img src={deepart} style={{ display: 'none' }} id="deepart" alt="deepart image" />
+        {this.state.hasEffect && <img src={this.state.effectImg} alt="image with effects" />}
       </div>
     );
   }

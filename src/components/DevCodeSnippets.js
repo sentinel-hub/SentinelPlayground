@@ -221,6 +221,7 @@ export default class DevCodeSnippets extends React.Component {
                     <a
                       href="https://developers.google.com/maps/documentation/javascript/get-api-key"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       here
                     </a>{' '}
@@ -287,6 +288,7 @@ export default class DevCodeSnippets extends React.Component {
               ) : (
                 <div className="DevCodeSnippets_Iframe">
                   <iframe
+                    title="DevCodeSnippets"
                     // srcDoc={previewContent}
                     style={{ width: '100%', border: 'none' }}
                     height={codeEditorSize - 5 + ''}

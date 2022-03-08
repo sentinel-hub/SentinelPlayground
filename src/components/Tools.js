@@ -91,14 +91,17 @@ class Tools extends React.Component {
           <img src={logo} alt="Sentinel Playground" />
         </header>
         <Tabs onMount={this.onMount} style={{ height: this.state.tabHeight }}>
-          <Tabs.Panel key={1} title={[<i className="fa fa-paint-brush" />, 'Rendering']}>
+          <Tabs.Panel key={1} title={[<i key={1} className="fa fa-paint-brush" />, 'Rendering']}>
             <SimplePresetsHolder key={1} toggleLegendModal={this.props.toggleLegendModal} />
           </Tabs.Panel>
-          <Tabs.Panel key={2} title={[<i className="fa fa-sliders" />, 'Effects']}>
+          <Tabs.Panel key={2} title={[<i key={2} className="fa fa-sliders" />, 'Effects']}>
             <EffectsPanel key={1} />
           </Tabs.Panel>
         </Tabs>
-        <footer ref="footer">{this.generateFooter()}<Banner /></footer>
+        <footer ref="footer">
+          {this.generateFooter()}
+          <Banner />
+        </footer>
       </div>
     );
   }

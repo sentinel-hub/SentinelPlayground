@@ -112,15 +112,20 @@ class DatasourceSwitch extends Component {
       loadGetCapabilities(ds)
         .then(() => {
           this.setState({ show: false, loading: false });
-          queryDates().then(res => {
-            Store.setAvailableDates(res);
-            Store.setPrevDate(getClosestNextDate(true));
-            Store.setNextDate(getClosestNextDate(false));
-          });
+          queryDates()
+            .then(res => {
+              Store.setAvailableDates(res);
+              Store.setPrevDate(getClosestNextDate(true));
+              Store.setNextDate(getClosestNextDate(false));
+            })
+            .catch(e => {
+              console.error(e);
+            });
         })
         .catch(e => {
           this.props.onError(`Could not load data for ${ds.name}. Please try again later.`);
           this.setState({ loading: false });
+          console.error(e);
         });
     }
   };
@@ -137,7 +142,7 @@ class DatasourceSwitch extends Component {
     return (
       <Style>
         <a onClick={() => this.setState({ show: !show })}>
-          {show ? <i className="fa fa-close" /> : <img src={satellite} />}
+          {show ? <i className="fa fa-close" /> : <img src={satellite} alt="satellite icon" />}
         </a>
         {show && (
           <div className={loading && 'loading'}>

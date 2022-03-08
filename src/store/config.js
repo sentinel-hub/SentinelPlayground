@@ -209,7 +209,7 @@ export default {
   currView: VIEWS.PRESETS,
   channels: [],
   path: '',
-  presets: {},
+  presets: [],
   presetsLegend: [],
   atmFilter: '',
   gain: new Number(1).toFixed(1),
@@ -223,5 +223,6 @@ export default {
   legendWidth: 0,
   legendUrl: null,
   views: VIEWS,
-  datasources: DATASOURCES
+  datasources: DATASOURCES,
+  termsPrivacyAccepted: false
 };

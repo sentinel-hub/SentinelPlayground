@@ -107,6 +107,9 @@ class RootMap extends React.Component {
     if (prevProps.showDates !== Store.current.showDates) {
       this.drawActiveLayer();
     }
+    if (prevProps.recaptchaAuthToken !== this.props.recaptchaAuthToken && !this.sentinelHubLayer) {
+      this.drawActiveLayer();
+    }
     if (prevProps.recaptchaAuthToken !== this.props.recaptchaAuthToken && this.sentinelHubLayer) {
       this.sentinelHubLayer.updateToken(this.props.recaptchaAuthToken);
     }
@@ -127,6 +130,12 @@ class RootMap extends React.Component {
   }
 
   drawActiveLayer() {
+    const { recaptchaAuthToken, setTokenShouldBeUpdated } = this.props;
+
+    if (!recaptchaAuthToken) {
+      return;
+    }
+
     if (this.sentL) {
       // this.mapControls.removeLayer(this.sentL)
       this.mainMap.removeLayer(this.sentL);
@@ -155,7 +164,6 @@ class RootMap extends React.Component {
       this.progress.done();
     });
 
-    const { recaptchaAuthToken, setTokenShouldBeUpdated } = this.props;
     this.sentinelHubLayer = new SentinelHub(url, urlProcessingApi, recaptchaAuthToken);
     const sentinelhubLayer = this.sentinelHubLayer; // hack because of how this and non-arrow functions work
     this.sentL.createTile = function(coords, done) {
@@ -198,7 +206,7 @@ class RootMap extends React.Component {
           if (error.response && error.response.status === 401) {
             setTokenShouldBeUpdated(true);
           }
-          console.log('There has been a problem with your fetch operation: ', error.message);
+          console.error('There has been a problem with your fetch operation: ', error.message);
           done(error, null);
         });
 
@@ -224,6 +232,7 @@ class RootMap extends React.Component {
           id="openstreetmap_link"
           className="linki"
           target="_blank"
+          rel="noopener noreferrer"
           href="http://www.openstreetmap.org/copyright"
         >
           OpenStreetMap
@@ -232,6 +241,7 @@ class RootMap extends React.Component {
           id="copyright_link"
           className="linki"
           target="_blank"
+          rel="noopener noreferrer"
           href="https://www.sentinel-hub.com"
         >
           © Sentinel Hub

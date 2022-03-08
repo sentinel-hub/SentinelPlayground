@@ -55,14 +55,22 @@ class MyDatePicker extends React.Component {
   };
 
   syncDates = e => {
-    queryDates(e).then(res => {
-      Store.setAvailableDates(res);
-      Store.setPrevDate(getClosestNextDate(true));
-      Store.setNextDate(getClosestNextDate(false));
-      getSelectedDatewithCC().then(date => {
-        if (date.cc > Store.current.maxcc) Store.setMaxcc(date.cc);
+    queryDates(e)
+      .then(res => {
+        Store.setAvailableDates(res);
+        Store.setPrevDate(getClosestNextDate(true));
+        Store.setNextDate(getClosestNextDate(false));
+        getSelectedDatewithCC()
+          .then(date => {
+            if (date.cc > Store.current.maxcc) Store.setMaxcc(date.cc);
+          })
+          .catch(e => {
+            console.error(e);
+          });
+      })
+      .catch(e => {
+        console.error(e);
       });
-    });
   };
 
   onDayPicked = e => {
